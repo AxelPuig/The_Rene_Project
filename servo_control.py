@@ -9,7 +9,7 @@ def init_servo(pin_number):
     GPIO.setwarnings(False)
 
     pwm=GPIO.PWM(pin_number, 100)  # 100 is the frequency of the PWM signal
-    pwm.start(0)
+    pwm.start(10)  # 10% is 0 for a servo
 
     return pwm
 
