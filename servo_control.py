@@ -1,17 +1,38 @@
 import RPi.GPIO as GPIO
 import time
 
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(2, GPIO.OUT)
-GPIO.setwarnings(False)
 
-ajoutAngle = 5
+def init_servo(pin_number):
+    """setup the GPIO_pin select as an output with a servo"""
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setup(pin_number, GPIO.OUT)
+    GPIO.setwarnings(False)
 
-print("\n+----------/ ServoMoteur  Controlleur /----------+")
-print("|                                                |")
-print("| Le Servo doit etre branche au pin 11 / GPIO 17 |")
-print("|                                                |")
-print("+------------------------------------------------+\n")
+    pwm=GPIO.PWM(pin_number, 100)  # 100 is the frequency of the PWM signal
+    pwm.start(0)
+
+    return pwm
+
+
+def set_angle(servo, angle):
+    """put the selected servo at the angle specified"""
+    duty_cycle = angle/3.6  # because duty_cycle is in %
+    servo.ChangeDutyCycle(duty_cycle)
+
+
+def clean_pwm():
+    """just to clear all the PWM"""
+    GPIO.cleanup()
+
+
+servo1 = init_servo(2)
+time.sleep(1)
+set_angle(servo1, 100)
+time.sleep(3)
+set_angle(servo1, 0)
+clean_pwm()
+
+a="""ajoutAngle = 5
 
 print("Comment controler le Servo ?")
 choix = int(input("1. Choisir un angle\n2. Faire tourner de 0 a 180\n"))
@@ -50,4 +71,4 @@ if choix == 1 :
     pwm.ChangeDutyCycle(angleChoisi)
     time.sleep(float(duree))
     pwm.ChangeDutyCycle(0)
-    GPIO.cleanup()
+    GPIO.cleanup()"""
