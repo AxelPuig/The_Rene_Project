@@ -2,7 +2,7 @@ import RPi.GPIO as GPIO
 import time
 
 GPIO.setmode(GPIO.BCM)
-GPIO.setup(17, GPIO.OUT)
+GPIO.setup(2, GPIO.OUT)
 GPIO.setwarnings(False)
 
 ajoutAngle = 5
@@ -20,7 +20,7 @@ if choix == 2 :
 
     nbrTour = input ("Entrez le nombre d'aller-retour que fera le Servo :\n")
 
-    pwm=GPIO.PWM(17,100)
+    pwm=GPIO.PWM(2,100)
     pwm.start(5)
 
     angle1 = 0
@@ -43,10 +43,11 @@ if choix == 1 :
     angle = input("Entrez l'angle souhaite :\n")
     duree = input("Entrez la duree durant laquelle le Servo devra tenir sa position : ( en secondes )\n")
 
-    pwm=GPIO.PWM(17,100)
+    pwm=GPIO.PWM(2,100)
     pwm.start(5)
 
     angleChoisi = float(angle)/10 + ajoutAngle
     pwm.ChangeDutyCycle(angleChoisi)
     time.sleep(float(duree))
+    pwm.ChangeDutyCycle(0)
     GPIO.cleanup()
