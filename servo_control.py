@@ -16,7 +16,7 @@ def init_servo(pin_number):
 
 def set_angle(servo, angle):
     """put the selected servo at the angle specified"""
-    duty_cycle = 10 + angle/360 * 10  # construction of a standard servo signal
+    duty_cycle = 10 + angle/180 * 10  # construction of a standard servo signal
     servo.ChangeDutyCycle(duty_cycle)
 
 
@@ -28,7 +28,7 @@ def clean_pwm():
 def test(pin_number):
     servo1 = init_servo(pin_number)
     time.sleep(1)
-    set_angle(servo1, 100)
+    set_angle(servo1, 180)
     time.sleep(3)
     set_angle(servo1, 0)
     time.sleep(1)
