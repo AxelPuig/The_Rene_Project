@@ -16,7 +16,7 @@ def init_servo(pin_number):
 
 def set_angle(servo, angle):
     """put the selected servo at the angle specified"""
-    duty_cycle = angle/3.6  # because duty_cycle is in %
+    duty_cycle = 10 + angle/360 * 10  # construction of a standard servo signal
     servo.ChangeDutyCycle(duty_cycle)
 
 
