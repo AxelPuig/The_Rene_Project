@@ -196,7 +196,7 @@ def process(image, data, debug=False):
     return frame
 
 def recognize():
-    """Detects faces present in the video source and saves the video to file"""
+    """Recognizes faces present in the video source"""
     data = load_database()
 
     source = 0
