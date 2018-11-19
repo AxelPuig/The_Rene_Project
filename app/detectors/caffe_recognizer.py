@@ -20,8 +20,9 @@ import time
 import sys
 import os
 
-frame_process_size = [(192,108), (256,144), (320,180), (300,300), (426,240), (640,360), (1280,720)][3]
-face_process_size = [(72,72), (96,96)][2]
+# Constants
+frame_process_size = [(192, 108), (256, 144), (320, 180), (300, 300), (426, 240), (640, 360), (1280, 720)][3]
+face_process_size = [(72, 72), (96, 96)][1]
 process_size_suffix = "_" + str(frame_process_size[0]) + "_" + str(frame_process_size[1])
 conf_threshold = .2
 font = cv2.FONT_HERSHEY_DUPLEX
@@ -37,8 +38,9 @@ net = cv2.dnn.readNetFromCaffe(proto_txt, config_file)
 embedder_file = "models\\openface_nn4.small2.v1.t7"
 embedder = cv2.dnn.readNetFromTorch(embedder_file)
 
+
 def serialize_database():
-    '''Pass the whole database from @database_path to the network to produce embeddings and serialize them'''
+    """Pass the whole database from @database_path to the network to produce embeddings and serialize them"""
     # grab the paths to the input images in our dataset
     print("[INFO] quantifying faces...")
     image_paths = list(paths.list_files(database_path))
@@ -58,7 +60,8 @@ def serialize_database():
         image = imutils.resize(image, width=600)
         h, w = image.shape[:2]
 
-        blob = cv2.dnn.blobFromImage(cv2.resize(image, frame_process_size), 1.0, frame_process_size, (104.0, 177.0, 123.0), swapRB=False, crop=False)
+        blob = cv2.dnn.blobFromImage(cv2.resize(image, frame_process_size), 1.0, frame_process_size,
+                                     (104.0, 177.0, 123.0), swapRB=False, crop=False)
         net.setInput(blob)
         detections = net.forward()
         # ensure at least one face was found
@@ -123,8 +126,9 @@ def serialize_database():
     f.write(pickle.dumps(le))
     f.close()
 
+
 def load_database():
-    '''Loads embeddings and labels from disk'''
+    """Loads embeddings and labels from disk"""
     print("[INFO] loading encodings...")
     database = pickle.loads(open(database_path + "embeddings" + process_size_suffix + ".pickle", "rb").read())
 
@@ -133,8 +137,19 @@ def load_database():
     le = pickle.loads(open(database_path + "le" + process_size_suffix + ".pickle", "rb").read())
     return database, recognizer, le
 
-def process(image, data, debug=False):
-    '''Process frame to show faces'''
+
+def process(image, data, data_on_frame=False):
+    """
+    Process frame and returns faces detected
+    :param image: Image to process
+    :param data: DataBase
+    :param data_on_frame: Returns the frame with rectangles and names around faces
+    :return: tuple with frame and list of dicts like :
+        "box": tuple (x1, y1, x2, y2)
+        "confidence_face": float (proba that the box corresponds to a face)
+        "name": str (name of the person detected)
+        "confidence_name": float (proba that the name corresponds to the face)
+    """
     database, recognizer, le = data
 
     # resize the frame to have a width of 600 pixels (while
@@ -144,12 +159,16 @@ def process(image, data, debug=False):
     (h, w) = frame.shape[:2]
 
     # construct a blob from the image
-    image_blob = cv2.dnn.blobFromImage(cv2.resize(frame, frame_process_size), 1.0, frame_process_size, (104.0, 177.0, 123.0), swapRB=False, crop=False)
+    image_blob = cv2.dnn.blobFromImage(cv2.resize(frame, frame_process_size), 1.0, frame_process_size,
+                                       (104.0, 177.0, 123.0), swapRB=False, crop=False)
 
     # apply OpenCV's deep learning-based face detector to localize
     # faces in the input image
     net.setInput(image_blob)
     detections = net.forward()
+
+    # List of tuples to return
+    dicts = []
 
     # loop over the detections
     for i in range(0, detections.shape[2]):
@@ -184,23 +203,31 @@ def process(image, data, debug=False):
             proba = preds[j]
             name = le.classes_[j]
 
-            # draw the bounding box of the face along with the
-            # associated probability
-            text = "{}: {:.2f}%".format(name.upper(), proba * 100)
-            box_color = (0, 255*proba, 255*(1-proba))
-            if confidence < conf_threshold:
-                box_color = (0, 0, 255)
-            cv2.rectangle(frame, (x1, y1), (x2, y2), box_color, 2, 8)
-            cv2.rectangle(frame, (x1, int(y1 + (y1-y2)/8)), (x2, y1), box_color, -1, 8)
-            cv2.putText(frame, text, (int(x1 + (x2-x1)/40), int(y1 + (y1-y2)/40)), font, (y2-y1)/420., (255,255,255), 1)
-    return frame
+            dicts.append({"box": (x1, y1, x2, y2),
+                          "confidence_face": confidence,
+                          "name": name,
+                          "confidence_name": proba})
+
+            if data_on_frame:
+                # draw the bounding box of the face along with the
+                # associated probability
+                text = "{}: {:.2f}%".format(name.upper(), proba * 100)
+                box_color = (0, 255 * proba, 255 * (1 - proba))
+                if confidence < conf_threshold:
+                    box_color = (0, 0, 255)
+                cv2.rectangle(frame, (x1, y1), (x2, y2), box_color, 2, 8)
+                cv2.rectangle(frame, (x1, int(y1 + (y1 - y2) / 8)), (x2, y1), box_color, -1, 8)
+                cv2.putText(frame, text, (int(x1 + (x2 - x1) / 40), int(y1 + (y1 - y2) / 40)), font, (y2 - y1) / 420.,
+                            (255, 255, 255), 1)
+    return (frame, dicts)
+
 
 def recognize():
     """Recognizes faces present in the video source"""
     data = load_database()
 
     source = 0
-    #By default we use 0 but we never know if there's any camera added to device, use it
+    # By default we use 0 but we never know if there's any camera added to device, use it
     if len(sys.argv) > 1:
         source = sys.argv[1]
 
@@ -217,7 +244,7 @@ def recognize():
         frame_count += 1
 
         t = time.time()
-        out_frame = process(frame, data)
+        out_frame, _ = process(frame, data, True)
         tt += time.time() - t
         fps = frame_count / tt
         label = "FPS : {:.2f}".format(fps)
@@ -233,6 +260,7 @@ def recognize():
             break
     cv2.destroyAllWindows()
 
-#serialize_database()
 
-#recognize()
+# serialize_database()
+
+recognize()
