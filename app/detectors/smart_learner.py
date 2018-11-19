@@ -25,10 +25,9 @@ net = cv2.dnn.readNetFromCaffe(proto_txt, config_file)
 embedder_file = "models\\openface_nn4.small2.v1.t7"
 embedder = cv2.dnn.readNetFromTorch(embedder_file)
 
-def serialize():
+def serialize(*names):
     # grab the paths to the input images in our dataset
     print("[INFO] quantifying faces...")
-    image_paths = list(paths.list_files(database_path))
 
     # initialize the list of known encodings and known names
     known_embeddings = []
@@ -36,51 +35,21 @@ def serialize():
 
     total = 0
     # loop over the image paths
-    for (i, image_path) in enumerate(image_paths):
-        # extract the person name from the image path
-        print("[INFO] processing image {}/{} :: {}".format(i + 1, len(image_paths), image_path))
-        name = image_path.split(os.path.sep)[-2]
+    for name in names:
+        print("[INFO] serializing {}...".format(name))
+        video_path = database_path + name + "\\face.avi"
+        video = cv2.VideoCapture(video_path)
+        has_frame, frame = video.read()
+        index = 1
 
-        image = cv2.imread(image_path)
-        image = imutils.resize(image, width=600)
-        h, w = image.shape[:2]
-
-        blob = cv2.dnn.blobFromImage(cv2.resize(image, frame_process_size), 1.0, frame_process_size, (104.0, 177.0, 123.0), swapRB=False, crop=False)
-        net.setInput(blob)
-        detections = net.forward()
-        # ensure at least one face was found
-        if len(detections) > 0:
-            # we're making the assumption that each image has only ONE
-            # face, so find the bounding box with the largest probability
-            i = np.argmax(detections[0, 0, :, 2])
-            confidence = detections[0, 0, i, 2]
-
-            # ensure that the detection with the largest probability also
-            # means our minimum probability test (thus helping filter out
-            # weak detections)
-            if confidence > conf_threshold:
-                # compute the (x, y)-coordinates of the bounding box for
-                box = detections[0, 0, i, 3:7] * np.array([w, h, w, h])
-                # the face
-                (startX, startY, endX, endY) = box.astype("int")
-
-                # extract the face ROI and grab the ROI dimensions
-                face = image[startY:endY, startX:endX]
-                (fH, fW) = face.shape[:2]
-
-                # ensure the face width and height are sufficiently large
-                if fW < 20 or fH < 20:
-                    continue
-
-                faceBlob = cv2.dnn.blobFromImage(face, 1.0 / 255, face_process_size, (0, 0, 0), swapRB=True, crop=False)
-                embedder.setInput(faceBlob)
-                vec = embedder.forward()
-
-                # add the name of the person + corresponding face
-                # embedding to their respective lists
+        while has_frame:
+            embedding = serialize_face(frame, name, index)
+            if embedding is not None:
+                known_embeddings.append(embedding)
                 known_names.append(name)
-                known_embeddings.append(vec.flatten())
                 total += 1
+            has_frame, frame = video.read()
+            index += 1
 
     # dump the facial embeddings + names to disk
     print("[INFO] serializing {} encodings...".format(total))
@@ -109,6 +78,46 @@ def serialize():
     f = open(database_path + "le.pickle", "wb")
     f.write(pickle.dumps(le))
     f.close()
+
+def serialize_face(frame, name, index):
+    # extract the person name from the image path
+    print("[INFO] processing image {}".format(index))
+
+    image = imutils.resize(frame, width=600)
+    h, w = image.shape[:2]
+
+    blob = cv2.dnn.blobFromImage(cv2.resize(image, frame_process_size), 1.0, frame_process_size, (104.0, 177.0, 123.0), swapRB=False, crop=False)
+    net.setInput(blob)
+    detections = net.forward()
+    # ensure at least one face was found
+    if len(detections) > 0:
+        # we're making the assumption that each image has only ONE
+        # face, so find the bounding box with the largest probability
+        i = np.argmax(detections[0, 0, :, 2])
+        confidence = detections[0, 0, i, 2]
+
+        # ensure that the detection with the largest probability also
+        # means our minimum probability test (thus helping filter out
+        # weak detections)
+        if confidence > conf_threshold:
+            # compute the (x, y)-coordinates of the bounding box for
+            box = detections[0, 0, i, 3:7] * np.array([w, h, w, h])
+            # the face
+            (startX, startY, endX, endY) = box.astype("int")
+
+            # extract the face ROI and grab the ROI dimensions
+            face = image[startY:endY, startX:endX]
+            (fH, fW) = face.shape[:2]
+
+            # ensure the face width and height are sufficiently large
+            if fW < 20 or fH < 20:
+                return None
+
+            faceBlob = cv2.dnn.blobFromImage(face, 1.0 / 255, face_process_size, (0, 0, 0), swapRB=True, crop=False)
+            embedder.setInput(faceBlob)
+            vec = embedder.forward()
+
+            return vec.flatten()
 
 def record(name):
     """Saves the video extracted from the video source to file at @database_path, then used to learn the face"""
@@ -163,7 +172,6 @@ def record(name):
     cv2.destroyAllWindows()
     vid_writer.release()
 
-    os.mkdir(database_path + "{}\\".format(name))
     os.rename("face.avi", database_path + "{}\\face.avi".format(name))
 
-record("Romain")
+serialize("Romain","Alexis","Axel","Remi","Fabien")

@@ -22,11 +22,11 @@ rectangles = []
 
 frame_process_size = [(192,108), (256,144), (320,180), (300,300), (426,240), (640,360), (1280,720)][3]
 face_process_size = [(48,48), (72,72), (96,96)][2]
-conf_threshold = .2
+conf_threshold = .5
 font = cv2.FONT_HERSHEY_DUPLEX
 update_interval = 10
 
-database_path = "..\\..\\Data\\database\\"
+database_path = "..\\..\\Data\\database\\learn\\"
 
 # load our serialized face detector from disk
 proto_txt = "models\\deploy.prototxt.txt"
