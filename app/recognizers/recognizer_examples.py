@@ -3,8 +3,8 @@ This files contains examples and tests of the recognizers
 """
 import cv2
 
-import app.detectors.database
-from app.detectors.recognizer import Recognizer
+import app.recognizers.database
+from app.recognizers.recognizer import Recognizer
 
 recognizer = Recognizer(method=1)
 

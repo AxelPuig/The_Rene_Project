@@ -6,7 +6,7 @@ import sys
 import time
 
 import cv2
-import app.detectors.database as db
+import app.recognizers.database as db
 import imutils
 
 conf_threshold = .2
