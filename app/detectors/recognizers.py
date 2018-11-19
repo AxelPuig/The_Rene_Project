@@ -6,9 +6,11 @@ import sys
 import time
 
 import cv2
-from app.detectors.database import frame_process_size, net, conf_threshold, embedder, load_database, face_process_size, \
-    font
+import app.detectors.database as db
 import imutils
+
+conf_threshold = .2
+font = cv2.FONT_HERSHEY_DUPLEX
 
 
 def process(image, data, data_on_frame=False):
@@ -32,13 +34,13 @@ def process(image, data, data_on_frame=False):
     (h, w) = frame.shape[:2]
 
     # construct a blob from the image
-    image_blob = cv2.dnn.blobFromImage(cv2.resize(frame, frame_process_size), 1.0, frame_process_size,
+    image_blob = cv2.dnn.blobFromImage(cv2.resize(frame, db.frame_process_size), 1.0, db.frame_process_size,
                                        (104.0, 177.0, 123.0), swapRB=False, crop=False)
 
     # apply OpenCV's deep learning-based face detector to localize
     # faces in the input image
-    net.setInput(image_blob)
-    detections = net.forward()
+    db.net.setInput(image_blob)
+    detections = db.net.forward()
 
     # List of tuples to return
     dicts = []
@@ -66,9 +68,9 @@ def process(image, data, data_on_frame=False):
             # construct a blob for the face ROI, then pass the blob
             # through our face embedding model to obtain the 128-d
             # quantification of the face
-            faceBlob = cv2.dnn.blobFromImage(face, 1.0 / 255, face_process_size, (0, 0, 0), swapRB=True, crop=False)
-            embedder.setInput(faceBlob)
-            vec = embedder.forward()
+            faceBlob = cv2.dnn.blobFromImage(face, 1.0 / 255, db.face_process_size, (0, 0, 0), swapRB=True, crop=False)
+            db.embedder.setInput(faceBlob)
+            vec = db.embedder.forward()
 
             # perform classification to recognize the face
             preds = recognizer.predict_proba(vec)[0]
@@ -97,7 +99,7 @@ def process(image, data, data_on_frame=False):
 
 def recognize():
     """Recognizes faces present in the video source"""
-    data = load_database()
+    data = db.load_database()
 
     source = 0
     # By default we use 0 but we never know if there's any camera added to device, use it

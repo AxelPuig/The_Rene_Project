@@ -26,8 +26,6 @@ import os
 frame_process_size = [(192, 108), (256, 144), (320, 180), (300, 300), (426, 240), (640, 360), (1280, 720)][3]
 face_process_size = [(72, 72), (96, 96)][1]
 process_size_suffix = "_" + str(frame_process_size[0]) + "_" + str(frame_process_size[1])
-conf_threshold = .2
-font = cv2.FONT_HERSHEY_DUPLEX
 
 database_path = "..\\..\\Data\\database\\train\\"
 
