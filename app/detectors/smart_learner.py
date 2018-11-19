@@ -51,6 +51,20 @@ def serialize(*names):
             has_frame, frame = video.read()
             index += 1
 
+        video_path_smiling = database_path + name + "\\face-smiling.avi"
+        video = cv2.VideoCapture(video_path_smiling)
+        has_frame, frame = video.read()
+        index = 1
+
+        while has_frame:
+            embedding = serialize_face(frame, name, index, True)
+            if embedding is not None:
+                known_embeddings.append(embedding)
+                known_names.append(name + "-smile")
+                total += 1
+            has_frame, frame = video.read()
+            index += 1
+
     # dump the facial embeddings + names to disk
     print("[INFO] serializing {} encodings...".format(total))
     data = {"embeddings": known_embeddings, "names": known_names}
@@ -79,7 +93,7 @@ def serialize(*names):
     f.write(pickle.dumps(le))
     f.close()
 
-def serialize_face(frame, name, index):
+def serialize_face(frame, name, index, smiling=False):
     # extract the person name from the image path
     print("[INFO] processing image {}".format(index))
 
@@ -119,7 +133,7 @@ def serialize_face(frame, name, index):
 
             return vec.flatten()
 
-def record(name):
+def record(name, smiling=False):
     """Saves the video extracted from the video source to file at @database_path, then used to learn the face"""
 
     source = 0
@@ -132,7 +146,12 @@ def record(name):
     cap = cv2.VideoCapture(source)
     has_frame, frame = cap.read()
 
-    vid_writer = cv2.VideoWriter('face.avi', cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'), 15, (frame.shape[1], frame.shape[0]))
+    if smiling:
+        filename = "face.avi"
+    else:
+        filename = "face-smiling.avi"
+
+    vid_writer = cv2.VideoWriter(filename, cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'), 15, (frame.shape[1], frame.shape[0]))
 
     frame_count = 0
     t = time.time()
@@ -172,6 +191,6 @@ def record(name):
     cv2.destroyAllWindows()
     vid_writer.release()
 
-    os.rename("face.avi", database_path + "{}\\face.avi".format(name))
+    os.rename(filename, database_path + "{}\\".format(name) + filename)
 
 serialize("Romain","Alexis","Axel","Remi","Fabien")
