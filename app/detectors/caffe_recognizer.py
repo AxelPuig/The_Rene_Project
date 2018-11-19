@@ -1,3 +1,14 @@
+'''
+
+    Caffe CNN used to recognize faces on webcam
+
+    We first need to serialize embeddings produced by the network from the images from @database_path
+    @frame_process_size and @face_process_size can be changed to other sizes from the list to enhance performances
+    !! If you change it, don't forget to serialize database to use new process size and make sure you have the best results !!
+    Thus, @process_size_suffix is used to save embeddings corresponding to different process sizes
+
+'''
+
 from imutils import paths
 from sklearn.preprocessing import LabelEncoder
 from sklearn.svm import SVC
@@ -10,7 +21,8 @@ import sys
 import os
 
 frame_process_size = [(192,108), (256,144), (320,180), (300,300), (426,240), (640,360), (1280,720)][3]
-face_process_size = [(48,48), (72,72), (96,96)][2]
+face_process_size = [(72,72), (96,96)][2]
+process_size_suffix = "_" + str(frame_process_size[0]) + "_" + str(frame_process_size[1])
 conf_threshold = .2
 font = cv2.FONT_HERSHEY_DUPLEX
 
@@ -26,6 +38,7 @@ embedder_file = "models\\openface_nn4.small2.v1.t7"
 embedder = cv2.dnn.readNetFromTorch(embedder_file)
 
 def serialize_database():
+    '''Pass the whole database from @database_path to the network to produce embeddings and serialize them'''
     # grab the paths to the input images in our dataset
     print("[INFO] quantifying faces...")
     image_paths = list(paths.list_files(database_path))
@@ -85,7 +98,7 @@ def serialize_database():
     # dump the facial embeddings + names to disk
     print("[INFO] serializing {} encodings...".format(total))
     data = {"embeddings": known_embeddings, "names": known_names}
-    f = open(database_path + "embeddings.pickle", "wb+")
+    f = open(database_path + "embeddings" + process_size_suffix + ".pickle", "wb+")
     f.write(pickle.dumps(data))
     f.close()
 
@@ -101,25 +114,27 @@ def serialize_database():
     recognizer.fit(known_embeddings, labels)
 
     # write the actual face recognition model to disk
-    f = open(database_path + "recognizer.pickle", "wb")
+    f = open(database_path + "recognizer" + process_size_suffix + ".pickle", "wb")
     f.write(pickle.dumps(recognizer))
     f.close()
 
     # write the label encoder to disk
-    f = open(database_path + "le.pickle", "wb")
+    f = open(database_path + "le" + process_size_suffix + ".pickle", "wb")
     f.write(pickle.dumps(le))
     f.close()
 
 def load_database():
+    '''Loads embeddings and labels from disk'''
     print("[INFO] loading encodings...")
-    database = pickle.loads(open(database_path + "embeddings.pickle", "rb").read())
+    database = pickle.loads(open(database_path + "embeddings" + process_size_suffix + ".pickle", "rb").read())
 
     # load the actual face recognition model along with the label encoder
-    recognizer = pickle.loads(open(database_path + "recognizer.pickle", "rb").read())
-    le = pickle.loads(open(database_path + "le.pickle", "rb").read())
+    recognizer = pickle.loads(open(database_path + "recognizer" + process_size_suffix + ".pickle", "rb").read())
+    le = pickle.loads(open(database_path + "le" + process_size_suffix + ".pickle", "rb").read())
     return database, recognizer, le
 
 def process(image, data, debug=False):
+    '''Process frame to show faces'''
     database, recognizer, le = data
 
     # resize the frame to have a width of 600 pixels (while
