@@ -1,3 +1,11 @@
+'''
+
+    Modified version of caffe_recognizer to enhance performances
+
+    We now update faces every @update_interval frames and only update faces if they are too far from any rectangle from the last frame
+
+'''
+
 from imutils import paths
 from sklearn.preprocessing import LabelEncoder
 from sklearn.svm import SVC
@@ -9,12 +17,14 @@ import time
 import sys
 import os
 
+# stores faces from the last frame
 rectangles = []
 
 frame_process_size = [(192,108), (256,144), (320,180), (300,300), (426,240), (640,360), (1280,720)][3]
 face_process_size = [(48,48), (72,72), (96,96)][2]
 conf_threshold = .2
 font = cv2.FONT_HERSHEY_DUPLEX
+update_interval = 10
 
 database_path = "..\\..\\Data\\database\\"
 
@@ -28,6 +38,7 @@ embedder_file = "models\\openface_nn4.small2.v1.t7"
 embedder = cv2.dnn.readNetFromTorch(embedder_file)
 
 def serialize_database():
+    '''Pass the whole database from @database_path to the network to produce embeddings and serialize them'''
     # grab the paths to the input images in our dataset
     print("[INFO] quantifying faces...")
     image_paths = list(paths.list_files(database_path))
@@ -113,6 +124,7 @@ def serialize_database():
     f.close()
 
 def load_database():
+    '''Loads embeddings and labels from disk'''
     print("[INFO] loading encodings...")
     database = pickle.loads(open(database_path + "embeddings.pickle", "rb").read())
 
@@ -122,6 +134,7 @@ def load_database():
     return database, recognizer, le
 
 def nearest_face(x,y):
+    '''Returns the nearest stored rectangle to (x,y)'''
     global rectangles
     nearest, prob, d = "unknown", 0, -1
     for x1,y1,x2,y2,name,proba in rectangles:
@@ -133,6 +146,7 @@ def nearest_face(x,y):
     return nearest,prob,d
 
 def process(image, data, frame_count, debug=False):
+    '''Process frame to show faces'''
     global rectangles
     database, recognizer, le = data
 
@@ -165,7 +179,7 @@ def process(image, data, frame_count, debug=False):
             x1, y1, x2, y2 = box.astype("int")
 
             name, proba, d = nearest_face((x1+x2)/2, (y1+y2)/2)
-            if d == -1 or d > 400 or frame_count % 10 == 0:
+            if d == -1 or d > 400 or frame_count % update_interval == 0:
                 # extract the face ROI
                 face = frame[y1:y2, x1:x2]
                 fH, fW = face.shape[:2]
@@ -202,7 +216,7 @@ def process(image, data, frame_count, debug=False):
     return frame
 
 def recognize():
-    """Detects faces present in the video source and saves the video to file"""
+    """Recognizes faces present in the video source"""
     data = load_database()
 
     source = 0
