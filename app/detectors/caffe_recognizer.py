@@ -263,4 +263,4 @@ def recognize():
 
 # serialize_database()
 
-recognize()
+# recognize()
