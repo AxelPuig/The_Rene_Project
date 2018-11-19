@@ -140,10 +140,10 @@ class Recognizer():
 
             if data_on_frame:
                 label = "FPS : {:.2f}".format(fps)
-                cv2.putText(out_frame, label, (5, 20), cv2.FONT_HERSHEY_SIMPLEX, .4, (255, 255, 255), 1)
+                cv2.putText(out_frame, label, (5, 20), font, .4, (255, 255, 255), 1)
 
             if show_frame:
-                cv2.imshow("Face detection using Caffe", out_frame)
+                cv2.imshow("Face recognition", out_frame)
 
             return out_frame, results
 
