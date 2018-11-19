@@ -29,3 +29,9 @@ This project was built using:
 * **Puig** *Axel*
 * **Briffod** *Alexis*
 * **Milon** *Romain*
+
+## Raspberry Pi SSH access
+- Wifi : Iphone de Fabien
+- ip : 172.20.10.2
+- id : pi
+- password : raspberry
