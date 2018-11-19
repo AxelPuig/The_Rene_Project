@@ -22,11 +22,11 @@ class Recognizer():
         self.data = db.load_database()
 
         source = 0
-        # By default we use 0 but we never know if there's any camera added to device, use it
+        # by default we use 0 but we never know if there's any camera added to device, use it
         if len(sys.argv) > 1:
             source = sys.argv[1]
 
-        print("[INFO] started camera...")
+        print("[INFO] starting camera...")
 
         self.cap = cv2.VideoCapture(source)
 
