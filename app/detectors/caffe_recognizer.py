@@ -1,8 +1,11 @@
 '''
 
-    Modified version of caffe_recognizer to enhance performances
+    Caffe CNN used to recognize faces on webcam
 
-    We now update faces every @update_interval frames and only update faces if they are too far from any rectangle from the last frame
+    We first need to serialize embeddings produced by the network from the images from @database_path
+    @frame_process_size and @face_process_size can be changed to other sizes from the list to enhance performances
+    !! If you change it, don't forget to serialize database to use new process size and make sure you have the best results !!
+    Thus, @process_size_suffix is used to save embeddings corresponding to different process sizes
 
 '''
 
@@ -17,16 +20,13 @@ import time
 import sys
 import os
 
-# stores faces from the last frame
-rectangles = []
-
 frame_process_size = [(192,108), (256,144), (320,180), (300,300), (426,240), (640,360), (1280,720)][3]
-face_process_size = [(48,48), (72,72), (96,96)][2]
+face_process_size = [(72,72), (96,96)][2]
+process_size_suffix = "_" + str(frame_process_size[0]) + "_" + str(frame_process_size[1])
 conf_threshold = .2
 font = cv2.FONT_HERSHEY_DUPLEX
-update_interval = 10
 
-database_path = "..\\..\\Data\\database\\"
+database_path = "..\\..\\Data\\database\\train\\"
 
 # load our serialized face detector from disk
 proto_txt = "models\\deploy.prototxt.txt"
@@ -98,7 +98,7 @@ def serialize_database():
     # dump the facial embeddings + names to disk
     print("[INFO] serializing {} encodings...".format(total))
     data = {"embeddings": known_embeddings, "names": known_names}
-    f = open(database_path + "embeddings.pickle", "wb+")
+    f = open(database_path + "embeddings" + process_size_suffix + ".pickle", "wb+")
     f.write(pickle.dumps(data))
     f.close()
 
@@ -114,40 +114,27 @@ def serialize_database():
     recognizer.fit(known_embeddings, labels)
 
     # write the actual face recognition model to disk
-    f = open(database_path + "recognizer.pickle", "wb")
+    f = open(database_path + "recognizer" + process_size_suffix + ".pickle", "wb")
     f.write(pickle.dumps(recognizer))
     f.close()
 
     # write the label encoder to disk
-    f = open(database_path + "le.pickle", "wb")
+    f = open(database_path + "le" + process_size_suffix + ".pickle", "wb")
     f.write(pickle.dumps(le))
     f.close()
 
 def load_database():
     '''Loads embeddings and labels from disk'''
     print("[INFO] loading encodings...")
-    database = pickle.loads(open(database_path + "embeddings.pickle", "rb").read())
+    database = pickle.loads(open(database_path + "embeddings" + process_size_suffix + ".pickle", "rb").read())
 
     # load the actual face recognition model along with the label encoder
-    recognizer = pickle.loads(open(database_path + "recognizer.pickle", "rb").read())
-    le = pickle.loads(open(database_path + "le.pickle", "rb").read())
+    recognizer = pickle.loads(open(database_path + "recognizer" + process_size_suffix + ".pickle", "rb").read())
+    le = pickle.loads(open(database_path + "le" + process_size_suffix + ".pickle", "rb").read())
     return database, recognizer, le
 
-def nearest_face(x,y):
-    '''Returns the nearest stored rectangle to (x,y)'''
-    global rectangles
-    nearest, prob, d = "unknown", 0, -1
-    for x1,y1,x2,y2,name,proba in rectangles:
-        dist = ((x1+x2)/2-x)**2+((y1+y2)/2-y)**2
-        if d == -1 or dist < d:
-            nearest = name
-            prob = proba
-            d = dist
-    return nearest,prob,d
-
-def process(image, data, frame_count, debug=False):
+def process(image, data, debug=False):
     '''Process frame to show faces'''
-    global rectangles
     database, recognizer, le = data
 
     # resize the frame to have a width of 600 pixels (while
@@ -164,8 +151,6 @@ def process(image, data, frame_count, debug=False):
     net.setInput(image_blob)
     detections = net.forward()
 
-    new_rectangles = []
-
     # loop over the detections
     for i in range(0, detections.shape[2]):
         # extract the confidence (i.e., probability) associated with
@@ -178,28 +163,26 @@ def process(image, data, frame_count, debug=False):
             box = detections[0, 0, i, 3:7] * np.array([w, h, w, h])
             x1, y1, x2, y2 = box.astype("int")
 
-            name, proba, d = nearest_face((x1+x2)/2, (y1+y2)/2)
-            if d == -1 or d > 400 or frame_count % update_interval == 0:
-                # extract the face ROI
-                face = frame[y1:y2, x1:x2]
-                fH, fW = face.shape[:2]
+            # extract the face ROI
+            face = frame[y1:y2, x1:x2]
+            fH, fW = face.shape[:2]
 
-                # ensure the face width and height are sufficiently large
-                if fW < 20 or fH < 20:
-                    continue
+            # ensure the face width and height are sufficiently large
+            if fW < 20 or fH < 20:
+                continue
 
-                # construct a blob for the face ROI, then pass the blob
-                # through our face embedding model to obtain the 128-d
-                # quantification of the face
-                faceBlob = cv2.dnn.blobFromImage(face, 1.0 / 255, face_process_size, (0, 0, 0), swapRB=True, crop=False)
-                embedder.setInput(faceBlob)
-                vec = embedder.forward()
+            # construct a blob for the face ROI, then pass the blob
+            # through our face embedding model to obtain the 128-d
+            # quantification of the face
+            faceBlob = cv2.dnn.blobFromImage(face, 1.0 / 255, face_process_size, (0, 0, 0), swapRB=True, crop=False)
+            embedder.setInput(faceBlob)
+            vec = embedder.forward()
 
-                # perform classification to recognize the face
-                preds = recognizer.predict_proba(vec)[0]
-                j = np.argmax(preds)
-                proba = preds[j]
-                name = le.classes_[j]
+            # perform classification to recognize the face
+            preds = recognizer.predict_proba(vec)[0]
+            j = np.argmax(preds)
+            proba = preds[j]
+            name = le.classes_[j]
 
             # draw the bounding box of the face along with the
             # associated probability
@@ -210,9 +193,6 @@ def process(image, data, frame_count, debug=False):
             cv2.rectangle(frame, (x1, y1), (x2, y2), box_color, 2, 8)
             cv2.rectangle(frame, (x1, int(y1 + (y1-y2)/8)), (x2, y1), box_color, -1, 8)
             cv2.putText(frame, text, (int(x1 + (x2-x1)/40), int(y1 + (y1-y2)/40)), font, (y2-y1)/420., (255,255,255), 1)
-            new_rectangles.append((x1,y1,x2,y2,name,proba))
-
-    rectangles = new_rectangles[:]
     return frame
 
 def recognize():
@@ -237,7 +217,7 @@ def recognize():
         frame_count += 1
 
         t = time.time()
-        out_frame = process(frame, data, frame_count)
+        out_frame = process(frame, data)
         tt += time.time() - t
         fps = frame_count / tt
         label = "FPS : {:.2f}".format(fps)
@@ -255,4 +235,4 @@ def recognize():
 
 #serialize_database()
 
-recognize()
+#recognize()

@@ -9,12 +9,14 @@ import time
 import sys
 import os
 
+database = []
+
 frame_process_size = [(192,108), (256,144), (320,180), (300,300), (426,240), (640,360), (1280,720)][3]
 face_process_size = [(48,48), (72,72), (96,96)][2]
 conf_threshold = .2
 font = cv2.FONT_HERSHEY_DUPLEX
 
-database_path = "..\\..\\Data\\database\\train\\"
+database_path = "..\\..\\Data\\database\\learn\\"
 
 # load our serialized face detector from disk
 proto_txt = "models\\deploy.prototxt.txt"
@@ -25,7 +27,7 @@ net = cv2.dnn.readNetFromCaffe(proto_txt, config_file)
 embedder_file = "models\\openface_nn4.small2.v1.t7"
 embedder = cv2.dnn.readNetFromTorch(embedder_file)
 
-def serialize_database():
+def serialize():
     # grab the paths to the input images in our dataset
     print("[INFO] quantifying faces...")
     image_paths = list(paths.list_files(database_path))
@@ -110,16 +112,8 @@ def serialize_database():
     f.write(pickle.dumps(le))
     f.close()
 
-def load_database():
-    print("[INFO] loading encodings...")
-    database = pickle.loads(open(database_path + "embeddings.pickle", "rb").read())
-
-    # load the actual face recognition model along with the label encoder
-    recognizer = pickle.loads(open(database_path + "recognizer.pickle", "rb").read())
-    le = pickle.loads(open(database_path + "le.pickle", "rb").read())
-    return database, recognizer, le
-
-def process(image, data, debug=False):
+def learn(image, data, debug=False):
+    global rectangles
     database, recognizer, le = data
 
     # resize the frame to have a width of 600 pixels (while
@@ -136,6 +130,8 @@ def process(image, data, debug=False):
     net.setInput(image_blob)
     detections = net.forward()
 
+    new_rectangles = []
+
     # loop over the detections
     for i in range(0, detections.shape[2]):
         # extract the confidence (i.e., probability) associated with
@@ -148,26 +144,28 @@ def process(image, data, debug=False):
             box = detections[0, 0, i, 3:7] * np.array([w, h, w, h])
             x1, y1, x2, y2 = box.astype("int")
 
-            # extract the face ROI
-            face = frame[y1:y2, x1:x2]
-            fH, fW = face.shape[:2]
+            name, proba, d = nearest_face((x1+x2)/2, (y1+y2)/2)
+            if d == -1 or d > 400 or frame_count % 10 == 0:
+                # extract the face ROI
+                face = frame[y1:y2, x1:x2]
+                fH, fW = face.shape[:2]
 
-            # ensure the face width and height are sufficiently large
-            if fW < 20 or fH < 20:
-                continue
+                # ensure the face width and height are sufficiently large
+                if fW < 20 or fH < 20:
+                    continue
 
-            # construct a blob for the face ROI, then pass the blob
-            # through our face embedding model to obtain the 128-d
-            # quantification of the face
-            faceBlob = cv2.dnn.blobFromImage(face, 1.0 / 255, face_process_size, (0, 0, 0), swapRB=True, crop=False)
-            embedder.setInput(faceBlob)
-            vec = embedder.forward()
+                # construct a blob for the face ROI, then pass the blob
+                # through our face embedding model to obtain the 128-d
+                # quantification of the face
+                faceBlob = cv2.dnn.blobFromImage(face, 1.0 / 255, face_process_size, (0, 0, 0), swapRB=True, crop=False)
+                embedder.setInput(faceBlob)
+                vec = embedder.forward()
 
-            # perform classification to recognize the face
-            preds = recognizer.predict_proba(vec)[0]
-            j = np.argmax(preds)
-            proba = preds[j]
-            name = le.classes_[j]
+                # perform classification to recognize the face
+                preds = recognizer.predict_proba(vec)[0]
+                j = np.argmax(preds)
+                proba = preds[j]
+                name = le.classes_[j]
 
             # draw the bounding box of the face along with the
             # associated probability
@@ -178,6 +176,9 @@ def process(image, data, debug=False):
             cv2.rectangle(frame, (x1, y1), (x2, y2), box_color, 2, 8)
             cv2.rectangle(frame, (x1, int(y1 + (y1-y2)/8)), (x2, y1), box_color, -1, 8)
             cv2.putText(frame, text, (int(x1 + (x2-x1)/40), int(y1 + (y1-y2)/40)), font, (y2-y1)/420., (255,255,255), 1)
+            new_rectangles.append((x1,y1,x2,y2,name,proba))
+
+    rectangles = new_rectangles[:]
     return frame
 
 def recognize():
@@ -202,7 +203,7 @@ def recognize():
         frame_count += 1
 
         t = time.time()
-        out_frame = process(frame, data)
+        out_frame = process(frame, data, frame_count)
         tt += time.time() - t
         fps = frame_count / tt
         label = "FPS : {:.2f}".format(fps)
@@ -218,6 +219,6 @@ def recognize():
             break
     cv2.destroyAllWindows()
 
-#serialize_database()
+learn()
 
-#recognize()
+serialize()
