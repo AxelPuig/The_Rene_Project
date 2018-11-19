@@ -30,7 +30,7 @@ process_size_suffix = "_" + str(frame_process_size[0]) + "_" + str(frame_process
 database_path = "..\\..\\Data\\database\\train\\"
 
 # load our serialized face detector from disk
-proto_txt = "models\\deploy.prototxt.txt"
+proto_txt = "models\\deploy.prototxt"
 config_file = "models\\res10_300x300_ssd_iter_140000.caffemodel"
 net = cv2.dnn.readNetFromCaffe(proto_txt, config_file)
 

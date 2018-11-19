@@ -12,7 +12,6 @@ import imutils
 conf_threshold = .2
 font = cv2.FONT_HERSHEY_DUPLEX
 
-
 class Recognizer():
 
     def __init__(self, method=1):
