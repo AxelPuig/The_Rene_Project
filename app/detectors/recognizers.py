@@ -1,13 +1,13 @@
 """
 This file contains different recognizer methods.
 """
-
-
+import numpy as np
 import sys
 import time
 
 import cv2
-from app.detectors.database import frame_process_size, net, conf_threshold, embedder, load_database
+from app.detectors.database import frame_process_size, net, conf_threshold, embedder, load_database, face_process_size, \
+    font
 import imutils
 
 
@@ -132,8 +132,3 @@ def recognize():
         if k == 27:
             break
     cv2.destroyAllWindows()
-
-
-# serialize_database()
-
-# recognize()
