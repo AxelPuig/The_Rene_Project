@@ -6,7 +6,7 @@ import app.recognizers.recognizer as rc
 
 recognizer = rc.Recognizer(conf_threshold=.6, method=rc.SMART_RECOGNITION)
 
-while 1:
+while True:
     recognizer.next_frame(data_on_frame=True, show_frame=True)
     if cv2.waitKey(1) != -1:
         break

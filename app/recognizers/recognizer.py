@@ -86,9 +86,9 @@ class Recognizer():
                 # construct a blob for the face ROI, then pass the blob
                 # through our face embedding model to obtain the 128-d
                 # quantification of the face
-                faceBlob = cv2.dnn.blobFromImage(face, 1.0 / 255, db.face_process_size, (0, 0, 0), swapRB=True,
+                face_blob = cv2.dnn.blobFromImage(face, 1.0 / 255, db.face_process_size, (0, 0, 0), swapRB=True,
                                                  crop=False)
-                db.embedder.setInput(faceBlob)
+                db.embedder.setInput(face_blob)
                 vec = db.embedder.forward()
 
                 # perform classification to recognize the face
