@@ -7,20 +7,20 @@ import sys
 import time
 import cv2
 
-frame_process_size = [(192, 108), (256, 144), (320, 180), (300, 300), (426, 240), (640, 360), (1280, 720)][3]
+frame_process_size = [(192, 108), (256, 144), (320, 180), (300, 300), (426, 240), (640, 360), (1280, 720)][4]
 net_models = [("models\\deploy.prototxt","models\\res10_300x300_ssd_iter_140000.caffemodel")]
 font = cv2.FONT_HERSHEY_DUPLEX
 FACE_DETECTION = 0
 
 class Detector():
 
-    def __init__(self, conf_threshold, method, source=-1):
+    def __init__(self, conf_threshold, method, path_to_models="", source=-1):
         """ Method corresponds to the detection method used"""
 
         self.method = method
         self.conf_threshold = conf_threshold
         proto,model = net_models[self.method]
-        self.net = cv2.dnn.readNetFromCaffe(proto,model)
+        self.net = cv2.dnn.readNetFromCaffe(path_to_models + proto, path_to_models + model)
 
         # by default we use 0 but we never know if there's any camera added to device, use it
         if source == -1 and len(sys.argv) > 1:
