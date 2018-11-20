@@ -9,22 +9,23 @@ import cv2
 import app.recognizers.database as db
 import imutils
 
-conf_threshold = .2
 font = cv2.FONT_HERSHEY_DUPLEX
+SMART_RECOGNITION = 1
 
 class Recognizer():
 
-    def __init__(self, method=1):
+    def __init__(self, conf_threshold=.5, method=SMART_RECOGNITION, source=-1):
         """ Method corresponds to the detection method used"""
 
         self.method = method
-
+        self.conf_threshold = conf_threshold
         self.data = db.load_database()
 
-        source = 0
         # by default we use 0 but we never know if there's any camera added to device, use it
-        if len(sys.argv) > 1:
+        if source == -1 and len(sys.argv) > 1:
             source = sys.argv[1]
+        else:
+            source = 0
 
         print("[INFO] starting camera...")
 
@@ -68,7 +69,7 @@ class Recognizer():
             # the prediction
             confidence = detections[0, 0, i, 2]
 
-            if confidence > conf_threshold:
+            if confidence > self.conf_threshold:
                 # compute the (x, y)-coordinates of the bounding box for
                 # the face
                 box = detections[0, 0, i, 3:7] * np.array([w, h, w, h])
@@ -106,7 +107,7 @@ class Recognizer():
                     # associated probability
                     text = "{}: {:.2f}%".format(name.upper(), proba * 100)
                     box_color = (0, 255 * proba, 255 * (1 - proba))
-                    if confidence < conf_threshold:
+                    if confidence < self.conf_threshold:
                         box_color = (0, 0, 255)
                     cv2.rectangle(frame, (x1, y1), (x2, y2), box_color, 2, 8)
                     cv2.rectangle(frame, (x1, int(y1 + (y1 - y2) / 8)), (x2, y1), box_color, -1, 8)
@@ -125,7 +126,7 @@ class Recognizer():
             "confidence_name": float (proba that the name corresponds to the face)
         """
 
-        if self.method == 1:
+        if self.method == SMART_RECOGNITION:
 
             t = time.time()
 
