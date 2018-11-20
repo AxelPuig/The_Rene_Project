@@ -14,7 +14,7 @@ SMART_RECOGNITION = 1
 
 class Recognizer():
 
-    def __init__(self, conf_threshold=.5, method=SMART_RECOGNITION, source=-1):
+    def __init__(self, conf_threshold, method, source=-1):
         """ Method corresponds to the detection method used"""
 
         self.method = method
@@ -33,10 +33,10 @@ class Recognizer():
 
     def process(self, image, data_on_frame=False):
         """
-        Processes frame and returns faces detected
-        :param image: Image to process
-        :param data: DataBase
-        :param data_on_frame: Returns the frame with rectangles and names around faces
+        Processes frame and returns faces recognized
+        :param image: image to process
+        :param data: database
+        :param data_on_frame: returns the frame with rectangles and names around faces
         :return: tuple with frame and list of dicts like :
             "box": tuple (x1, y1, x2, y2)
             "confidence_face": float (proba that the box corresponds to a face)
@@ -119,7 +119,7 @@ class Recognizer():
     def next_frame(self, data_on_frame=True, show_frame=False):
         """
         Returns None if end of video, else returns a tuple (frame, list of dicts),
-        where the list of dicts contains a dict for each face detected containing this :
+        where the list of dicts contains a dict for each face recognized containing this :
             "box": tuple (x1, y1, x2, y2)
             "confidence_face": float (proba that the box corresponds to a face)
             "name": str (name of the person detected)
