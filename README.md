@@ -30,7 +30,7 @@ This project was built using:
 * **Milon** *Romain*
 
 ## Raspberry Pi SSH access
-- Wifi : Iphone de Fabien
-- ip : 172.20.10.2
+- Wifi : Honor6X
+- ip : 192.168.43.70
 - id : pi
-- password : raspberry
+- password : umdpsn'aps
