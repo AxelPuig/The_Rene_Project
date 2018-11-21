@@ -1,5 +1,8 @@
 import cv2 as cv
 import numpy as np
+import os
+
+dir_path = os.path.dirname(os.path.realpath(__file__))
 
 # Initialize the parameters
 confThreshold = 0.5  # Confidence threshold
@@ -8,14 +11,14 @@ inpWidth = 416  # Width of network's input image
 inpHeight = 416  # Height of network's input image
 
 # Load names of classes
-classesFile = "models\\coco.names";
+classesFile = dir_path + os.sep + "models" + os.sep + "coco.names";
 classes = None
 with open(classesFile, 'rt') as f:
     classes = f.read().rstrip('\n').split('\n')
 
 # Give the configuration and weight files for the model and load the network using them.
-modelConfiguration = "models\\yolov3-tiny.cfg";
-modelWeights = "models\\yolov3-tiny.weights";
+modelConfiguration = dir_path + os.sep + "models" + os.sep + "yolov3-tiny.cfg";
+modelWeights = dir_path + os.sep + "models" + os.sep + "yolov3-tiny.weights";
 
 net = cv.dnn.readNetFromDarknet(modelConfiguration, modelWeights)
 net.setPreferableBackend(cv.dnn.DNN_BACKEND_OPENCV)

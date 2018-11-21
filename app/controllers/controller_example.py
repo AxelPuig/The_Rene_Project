@@ -1,4 +1,4 @@
-import app.controllers.controller as ct
+import app as ct
 
 controller = ct.Controller(.9, [])
 
