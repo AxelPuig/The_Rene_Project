@@ -15,12 +15,14 @@ SMART_RECOGNITION = 1
 
 class Recognizer():
 
-    def __init__(self, conf_threshold, method, source=-1, is_on_PC = True):
+    def __init__(self, conf_threshold, method, path_to_models="", source=-1, is_on_PC = True):
         """ Method corresponds to the detection method used"""
 
         self.method = method
         self.conf_threshold = conf_threshold
         self.data = db.load_database()
+
+        db.load_net(path_to_models)
 
         # by default we use 0 but we never know if there's any camera added to device, use it
         if source == -1 and len(sys.argv) > 1:
