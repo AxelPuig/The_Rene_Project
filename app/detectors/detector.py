@@ -49,7 +49,7 @@ class Detector():
         if os.uname()[1] != 'raspberrypi':
             return self.cap.read()
         else:
-            return cam_utils.camera_get_frame_adapted(self.cam)
+            return cam_utils.camera_get_frame(self.cam)
 
     def process(self, image, data_on_frame=False):
         """
