@@ -7,7 +7,9 @@ import time
 
 import cv2
 import app.recognizers.database as db
-#import app.rasp_compatibility.camera_utils as cam_utils
+import os
+if os.uname()[1] == 'raspberrypi':
+    import app.rasp_compatibility.camera_utils as cam_utils
 import imutils
 import os
 
@@ -16,7 +18,7 @@ SMART_RECOGNITION = 1
 
 class Recognizer():
 
-    def __init__(self, conf_threshold, method, source=-1, is_on_PC = True):
+    def __init__(self, conf_threshold, method, source=-1):
         """ Method corresponds to the detection method used"""
 
         self.method = method
@@ -31,12 +33,12 @@ class Recognizer():
 
         print("[INFO] starting camera...")
 
-        if is_on_PC:
+        if os.uname()[1] == 'raspberrypi':
             self.cap = cv2.VideoCapture(source)
-        #else:
+        else:
             # adapt the capture method for the raspberry
-            #self.cam = cam_utils.camera_init()
-            #self.cap.read = cam_utils.camera_get_frame_adapted()
+            self.cap = cam_utils.camera_init()
+            self.cap.read = cam_utils.camera_get_frame_adapted()
 
     def process(self, image, data_on_frame=False):
         """
