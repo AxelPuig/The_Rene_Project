@@ -24,8 +24,17 @@ def skin_detector(grabbed,frame): #define a function to blur the "non-skin" pixe
     new_frame = np.hstack([frame, skin])
     return ret, new_frame
 
-picture_frames = 0 #Counts the time when someone closes his hand
-picture_taken =  0 #Counts the number of pictures taken
+#Counts the time when someone closes his hand
+picture_frames = 0
+
+#Counts the number of pictures taken
+picture_taken =  0
+
+#Counts the frames
+frames_number =0
+
+#"Date" of the last picture
+last_picture = 0
 
 while(1):
           #therefore this try error statement
@@ -37,6 +46,7 @@ while(1):
     #define region of interest
     roi=frame[100:300, 100:300]
 
+    frames_number +=1
 
     cv2.rectangle(frame,(100,100),(300,300),(0,255,0),0)
     hsv = cv2.cvtColor(roi, cv2.COLOR_BGR2HSV)
@@ -122,37 +132,38 @@ while(1):
 
         #print corresponding gestures which are in their ranges
     font = cv2.FONT_HERSHEY_SIMPLEX
-    cv2.putText(frame,'Pictures taken :',(0,50), font, 2, (0,0,255), 3, cv2.LINE_AA)
+    cv2.putText(frame,'Pictures taken : {}'.format(picture_taken),(500,250), font, 1, (255,255,0), 3, cv2.LINE_AA) #Shows the number of pictures taken
     if l==1:
             if areacnt<2000:
-                cv2.putText(frame,'Put hand in the box',(0,50), font, 2, (0,0,255), 3, cv2.LINE_AA)
+                cv2.putText(frame,'Put hand in the box',(0,50), font, 2, (0,0,255), 3, cv2.LINE_AA)#Tells the user to put his hand in the box
             else:
-                if arearatio<12:
-                    picture_frames += 1
-                    if picture_frames >30 :
+                if arearatio<12: #first case of recognizing a closed fist
+                    picture_frames += 1 #implement in order to see how much time the fist is closed
+                    if frames_number-last_picture>100 and picture_taken >50 : #if the fist is closed long enough and the last picture is old, it takes a picture
                         cv2.putText(frame,'Picture taken',(0,50), font, 2, (0,0,255), 3, cv2.LINE_AA)
                         picture_taken +=1
-                        picture_frames = 0
+                        picture_frames = 0 #Reset
+                        last_picture = frames_number #memorize the frame number of the last picture
                     else:
-                        cv2.putText(frame,'Take a picture 3 ',(0,50), font, 2, (0,0,255), 3, cv2.LINE_AA)
-                elif arearatio<17.5:
+                        cv2.putText(frame,'Take a picture',(0,50), font, 2, (0,0,255), 3, cv2.LINE_AA)
+                elif arearatio<17.5: #second case of recognizing a closed fist
                     picture_frames += 1
-                    if picture_frames >30 :
+                    if frames_number-last_picture>100 and picture_frames >50 :
                         cv2.putText(frame,'Picture taken',(0,50), font, 2, (0,0,255), 3, cv2.LINE_AA)
                         picture_frames = 0
                         picture_taken += 1
+                        last_picture = frames_number
                     else :
-                        cv2.putText(frame,'Take a picture 2',(0,50), font, 2, (0,0,255), 3, cv2.LINE_AA)
+                        cv2.putText(frame,'Take a picture',(0,50), font, 2, (0,0,255), 3, cv2.LINE_AA)
 
-    elif l==2:
-            cv2.putText(frame,'Say Hello 2',(0,50), font, 2, (0,0,255), 3, cv2.LINE_AA)
+    elif l==2: #The hand seems to be open
+            cv2.putText(frame,'Say Hello',(0,50), font, 2, (0,0,255), 3, cv2.LINE_AA)
             if picture_frames >0 :
-                picture_frames -= 1
+                picture_frames -= 1 #decrease to reset continuously
 
-    elif l==3:
-
+    elif l==3: #The hand seems to be open
               if arearatio<27:
-                    cv2.putText(frame,'Say Hello 3',(0,50), font, 2, (0,0,255), 3, cv2.LINE_AA)
+                    cv2.putText(frame,'Say Hello',(0,50), font, 2, (0,0,255), 3, cv2.LINE_AA)
                     if picture_frames > 0:
                         picture_frames -=1
               #else:
@@ -174,6 +185,7 @@ while(1):
     #cv2.imshow('mask',mask)
     cv2.imshow('frame',frame)
     k = cv2.waitKey(5) & 0xFF
+          #Ends the program if the user press "Escape"
     if k == 27:
         break
 
