@@ -8,12 +8,17 @@ import time
 import cv2
 import os
 
+if os.uname()[1] == 'raspberrypi':
+    import app.rasp_compatibility.camera_utils as cam_utils
+
 dir_path = os.path.dirname(os.path.realpath(__file__))
 
 frame_process_size = [(192, 108), (256, 144), (320, 180), (300, 300), (426, 240), (640, 360), (1280, 720)][4]
-net_models = [(dir_path + os.sep + "models\\deploy.prototxt", dir_path + os.sep + "models\\res10_300x300_ssd_iter_140000.caffemodel")]
+net_models = [(dir_path + os.sep + "models" + os.sep + "deploy.prototxt",
+               dir_path + os.sep + "models" + os.sep + "res10_300x300_ssd_iter_140000.caffemodel")]
 font = cv2.FONT_HERSHEY_DUPLEX
 FACE_DETECTION = 0
+
 
 class Detector():
 
@@ -22,8 +27,8 @@ class Detector():
 
         self.method = method
         self.conf_threshold = conf_threshold
-        proto,model = net_models[self.method]
-        
+        proto, model = net_models[self.method]
+
         self.net = cv2.dnn.readNetFromCaffe(proto, model)
 
         # by default we use 0 but we never know if there's any camera added to device, use it
@@ -34,7 +39,17 @@ class Detector():
 
         print("[INFO] starting camera...")
 
-        self.cap = cv2.VideoCapture(source)
+        if os.uname()[1] != 'raspberrypi':
+            self.cap = cv2.VideoCapture(source)
+        else:
+            # adapt the capture method for the raspberry
+            self.cam = cam_utils.camera_init()
+
+    def read(self):
+        if os.uname()[1] != 'raspberrypi':
+            return self.cap.read()
+        else:
+            return cam_utils.camera_get_frame(self.cam)
 
     def process(self, image, data_on_frame=False):
         """
@@ -53,15 +68,15 @@ class Detector():
         faces = []
         for i in range(detections.shape[2]):
             confidence = detections[0, 0, i, 2]
-            if confidence > self.conf_threshold:   # definition of the left-top and right-bottom corners
+            if confidence > self.conf_threshold:  # definition of the left-top and right-bottom corners
                 x1 = int(detections[0, 0, i, 3] * width)
                 y1 = int(detections[0, 0, i, 4] * height)
                 x2 = int(detections[0, 0, i, 5] * width)
                 y2 = int(detections[0, 0, i, 6] * height)
-                faces.append((x1,y1,x2,y2,confidence))
+                faces.append((x1, y1, x2, y2, confidence))
 
                 if data_on_frame:
-                    ratio = (confidence-self.conf_threshold)/(1-self.conf_threshold)
+                    ratio = (confidence - self.conf_threshold) / (1 - self.conf_threshold)
                     box_color = (0, 255 * ratio, 255 * (1 - ratio))
                     if confidence < self.conf_threshold:
                         box_color = (0, 0, 255)
@@ -71,7 +86,7 @@ class Detector():
                     cv2.putText(out_frame, str((confidence // 0.0001) / 100) + '%',
                                 (int(x1 + (x2 - x1) / 20), int(y1 + (y1 - y2) / 40)), cv2.FONT_HERSHEY_DUPLEX,
                                 (y2 - y1) / 300., (255, 255, 255), 1)
-        return out_frame,faces
+        return out_frame, faces
 
     def next_frame(self, data_on_frame=True, show_frame=False):
         """
@@ -83,7 +98,7 @@ class Detector():
 
             t = time.time()
 
-            has_frame, frame = self.cap.read()
+            has_frame, frame = self.read()
             if not has_frame:
                 return None
 

@@ -15,7 +15,7 @@ def capture_camera():
     # We acknowledge capturing a 30 fps video
     while True:
         #récupération de l'image fournie par la caméra
-        out_frame = cam_utils.camera_get_frame(cam)
+        _, out_frame = cam_utils.camera_get_frame(cam)
         print(type(out_frame))
         cv2.putText(out_frame, "Raspberry camera test", (5, 20), cv2.FONT_HERSHEY_SIMPLEX, .4, (255, 255, 255), 1)
 
