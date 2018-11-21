@@ -12,8 +12,9 @@ class Controller():
         sct.setup_GPIO()
         self.servos = []
         for i in range(len(pins)):
-            servo = sct.ServoController(pins[i])
-            self.servos.append(servo)
+            if pins[i] != -1:
+                servo = sct.ServoController(pins[i])
+                self.servos.append(servo)
 
         self.conf_threshold = conf_threshold
         self.detector = dt.Detector(conf_threshold, dt.FACE_DETECTION, path_to_models="..\\detectors\\")
