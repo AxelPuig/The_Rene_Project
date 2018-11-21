@@ -1,7 +1,7 @@
 
 import os
 
-def reneParle(text):
+def rene_parle(text):
     """Synthese vocale du texte saisi (text), par le Raspberry"""
     parole = open("parole.txt", "w") #création d'un fichier text
     parole.write("""#!/bin/bash
