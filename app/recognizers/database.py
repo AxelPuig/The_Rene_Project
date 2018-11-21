@@ -31,13 +31,22 @@ database_path = "..\\..\\Data\\database\\learn\\"
 # load our serialized face detector from disk
 proto_txt = "models\\deploy.prototxt"
 config_file = "models\\res10_300x300_ssd_iter_140000.caffemodel"
-net = cv2.dnn.readNetFromCaffe(proto_txt, config_file)
+net = None
 
 # load our serialized face embedding model from disk
 embedder_file = "models\\openface_nn4.small2.v1.t7"
-embedder = cv2.dnn.readNetFromTorch(embedder_file)
+embedder = None
+
+def load_net(path_to_models):
+    global proto_txt, config_file, embedder_file, net, embedder
+    proto_txt = path_to_models + proto_txt
+    config_file = path_to_models + config_file
+    embedder_file = path_to_models + embedder_file
+    net = cv2.dnn.readNetFromCaffe(proto_txt, config_file)
+    embedder = cv2.dnn.readNetFromTorch(embedder_file)
 
 def serialize(conf_threshold, *names):
+
     # grab the paths to the input images in our dataset
     print("[INFO] quantifying faces...")
 

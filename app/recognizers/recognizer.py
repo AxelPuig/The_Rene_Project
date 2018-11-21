@@ -21,14 +21,7 @@ class Recognizer():
         self.conf_threshold = conf_threshold
         self.data = db.load_database()
 
-        # load our serialized face detector from disk
-        proto_txt = path_to_models + "models\\deploy.prototxt"
-        config_file = path_to_models + "models\\res10_300x300_ssd_iter_140000.caffemodel"
-        self.net = cv2.dnn.readNetFromCaffe(proto_txt, config_file)
-
-        # load our serialized face embedding model from disk
-        embedder_file = path_to_models + "models\\openface_nn4.small2.v1.t7"
-        self.embedder = cv2.dnn.readNetFromTorch(embedder_file)
+        db.load_net(path_to_models)
 
         # by default we use 0 but we never know if there's any camera added to device, use it
         if source == -1 and len(sys.argv) > 1:
@@ -71,8 +64,8 @@ class Recognizer():
 
         # apply OpenCV's deep learning-based face detector to localize
         # faces in the input image
-        self.net.setInput(image_blob)
-        detections = self.net.forward()
+        db.net.setInput(image_blob)
+        detections = db.net.forward()
 
         # List of tuples to return
         dicts = []
@@ -102,8 +95,8 @@ class Recognizer():
                 # quantification of the face
                 face_blob = cv2.dnn.blobFromImage(face, 1.0 / 255, db.face_process_size, (0, 0, 0), swapRB=True,
                                                  crop=False)
-                self.embedder.setInput(face_blob)
-                vec = self.embedder.forward()
+                db.embedder.setInput(face_blob)
+                vec = db.embedder.forward()
 
                 # perform classification to recognize the face
                 preds = recognizer.predict_proba(vec)[0]
