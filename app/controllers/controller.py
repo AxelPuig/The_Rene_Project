@@ -12,17 +12,12 @@ class Controller():
         sct.setup_GPIO()
         self.servos = []
         for i in range(len(pins)):
-            servo = sct.ServoController(pins[i])
-            self.servos.append(servo)
+            if pins[i] != -1:
+                servo = sct.ServoController(pins[i])
+                self.servos.append(servo)
 
         self.conf_threshold = conf_threshold
-        self.detector = dt.Detector(conf_threshold, dt.FACE_DETECTION, path_to_models="..\\detectors\\")
-
-    def get_rotation(self):
-        return self.rotation
-
-    def set_rotation(self, rotation):
-        self.rotation = rotation
+        self.detector = dt.Detector(conf_threshold, dt.FACE_DETECTION)
 
     def next_move(self):
         out_frame, faces = self.detector.next_frame(data_on_frame=True, show_frame=True)
@@ -31,7 +26,6 @@ class Controller():
             x1,y1,x2,y2,confidence = faces[0]
             height,width = out_frame.shape[0],out_frame.shape[1]
             x,y = (x1+x2)/2, (y1+y2)/2
-            rotation = self.get_rotation()
             if x > width/2:
                 self.servos[1].add_ratio(percent_per_frame)
             else:
