@@ -49,8 +49,6 @@ class Detector():
             return cam_utils.camera_get_frame_adapted(self.cam)
 
     def process(self, image, data_on_frame=False):
-
-    def process(self, image, data_on_frame=False):
         """
         Processes frame and returns faces detected
         :param image: image to process
