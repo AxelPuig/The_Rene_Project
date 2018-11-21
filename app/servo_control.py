@@ -16,7 +16,7 @@ def init_servo(pin_number):
 
 def set_angle(servo, percentage):
     """put the selected servo at the angle specified in percentage of the max angle"""
-    duty_cycle = 10 + percentage/90 * 10  # construction of a standard servo signal
+    duty_cycle = 10 + percentage / 10  # construction of a standard servo signal
     servo.ChangeDutyCycle(duty_cycle)
 
 
