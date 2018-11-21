@@ -14,7 +14,7 @@ SMART_RECOGNITION = 1
 
 class Recognizer():
 
-    def __init__(self, conf_threshold, method, path_to_models="", source=-1):
+    def __init__(self, conf_threshold, method, path_to_models="", source=-1, is_on_PC = True):
         """ Method corresponds to the detection method used"""
 
         self.method = method
@@ -38,7 +38,12 @@ class Recognizer():
 
         print("[INFO] starting camera...")
 
-        self.cap = cv2.VideoCapture(source)
+        if is_on_PC:
+            self.cap = cv2.VideoCapture(source)
+        #else:
+            # adapt the capture method for the raspberry
+            #self.cam = cam_utils.camera_init()
+            #self.cap.read = cam_utils.camera_get_frame_adapted()
 
     def process(self, image, data_on_frame=False):
         """
