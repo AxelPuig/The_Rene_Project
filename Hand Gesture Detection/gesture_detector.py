@@ -24,6 +24,9 @@ def skin_detector(grabbed,frame): #define a function to blur the "non-skin" pixe
     new_frame = np.hstack([frame, skin])
     return ret, new_frame
 
+picture_frames = 0 #Counts the time when someone closes his hand
+picture_taken =  0 #Counts the number of pictures taken
+
 while(1):
           #therefore this try error statement
     ret, frame = cap.read()
@@ -119,33 +122,47 @@ while(1):
 
         #print corresponding gestures which are in their ranges
     font = cv2.FONT_HERSHEY_SIMPLEX
+    cv2.putText(frame,'Pictures taken :',(0,50), font, 2, (0,0,255), 3, cv2.LINE_AA)
     if l==1:
             if areacnt<2000:
                 cv2.putText(frame,'Put hand in the box',(0,50), font, 2, (0,0,255), 3, cv2.LINE_AA)
             else:
                 if arearatio<12:
-                    cv2.putText(frame,'Take a picture',(0,50), font, 2, (0,0,255), 3, cv2.LINE_AA)
+                    picture_frames += 1
+                    if picture_frames >30 :
+                        cv2.putText(frame,'Picture taken',(0,50), font, 2, (0,0,255), 3, cv2.LINE_AA)
+                        picture_taken +=1
+                        picture_frames = 0
+                    else:
+                        cv2.putText(frame,'Take a picture 3 ',(0,50), font, 2, (0,0,255), 3, cv2.LINE_AA)
                 elif arearatio<17.5:
-                    cv2.putText(frame,'Best of luck',(0,50), font, 2, (0,0,255), 3, cv2.LINE_AA)
-
-                else:
-                    cv2.putText(frame,'1',(0,50), font, 2, (0,0,255), 3, cv2.LINE_AA)
+                    picture_frames += 1
+                    if picture_frames >30 :
+                        cv2.putText(frame,'Picture taken',(0,50), font, 2, (0,0,255), 3, cv2.LINE_AA)
+                        picture_frames = 0
+                        picture_taken += 1
+                    else :
+                        cv2.putText(frame,'Take a picture 2',(0,50), font, 2, (0,0,255), 3, cv2.LINE_AA)
 
     elif l==2:
-            cv2.putText(frame,'Say Hello',(0,50), font, 2, (0,0,255), 3, cv2.LINE_AA)
+            cv2.putText(frame,'Say Hello 2',(0,50), font, 2, (0,0,255), 3, cv2.LINE_AA)
+            if picture_frames >0 :
+                picture_frames -= 1
 
     elif l==3:
 
               if arearatio<27:
-                    cv2.putText(frame,'Say Hello',(0,50), font, 2, (0,0,255), 3, cv2.LINE_AA)
-              else:
-                    cv2.putText(frame,'ok',(0,50), font, 2, (0,0,255), 3, cv2.LINE_AA)
+                    cv2.putText(frame,'Say Hello 3',(0,50), font, 2, (0,0,255), 3, cv2.LINE_AA)
+                    if picture_frames > 0:
+                        picture_frames -=1
+              #else:
+                    #cv2.putText(frame,'ok',(0,50), font, 2, (0,0,255), 3, cv2.LINE_AA)
 
-    elif l==4:
-            cv2.putText(frame,'4',(0,50), font, 2, (0,0,255), 3, cv2.LINE_AA)
+    #elif l==4:
+     #       cv2.putText(frame,'4',(0,50), font, 2, (0,0,255), 3, cv2.LINE_AA)
 
-    elif l==5:
-            cv2.putText(frame,'5',(0,50), font, 2, (0,0,255), 3, cv2.LINE_AA)
+    #elif l==5:
+            #cv2.putText(frame,'5',(0,50), font, 2, (0,0,255), 3, cv2.LINE_AA)
 
     elif l==6:
             cv2.putText(frame,'reposition',(0,50), font, 2, (0,0,255), 3, cv2.LINE_AA)
