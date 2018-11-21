@@ -6,7 +6,7 @@ import sys
 import time
 
 import cv2
-import app as db
+import app.recognizers.database as db
 #import app.rasp_compatibility.camera_utils as cam_utils
 import imutils
 
