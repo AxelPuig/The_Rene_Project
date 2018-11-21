@@ -14,7 +14,7 @@ rm temp.wav""")
     parole.write(text)
     parole.close()
     os.rename('parole.txt','parole.sh')
-    os.system('sh test.sh')
+    os.system('sh parole.sh')
     os.remove('parole.sh')
 
 
