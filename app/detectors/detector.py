@@ -23,6 +23,7 @@ class Detector():
         self.method = method
         self.conf_threshold = conf_threshold
         proto,model = net_models[self.method]
+        
         self.net = cv2.dnn.readNetFromCaffe(proto, model)
 
         # by default we use 0 but we never know if there's any camera added to device, use it

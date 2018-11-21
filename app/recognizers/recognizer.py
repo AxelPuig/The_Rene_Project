@@ -6,9 +6,12 @@ import sys
 import time
 
 import cv2
+
 import app as db
+
 #import app.rasp_compatibility.camera_utils as cam_utils
 import imutils
+import os
 
 font = cv2.FONT_HERSHEY_DUPLEX
 SMART_RECOGNITION = 1
