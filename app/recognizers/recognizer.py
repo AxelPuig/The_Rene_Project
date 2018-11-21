@@ -33,7 +33,7 @@ class Recognizer():
 
         print("[INFO] starting camera...")
 
-        if os.uname()[1] == 'raspberrypi':
+        if os.uname()[1] != 'raspberrypi':
             self.cap = cv2.VideoCapture(source)
         else:
             # adapt the capture method for the raspberry
