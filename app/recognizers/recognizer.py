@@ -6,10 +6,9 @@ import sys
 import time
 
 import cv2
-import app.recognizers.database as db
+import app as db
 #import app.rasp_compatibility.camera_utils as cam_utils
 import imutils
-import os
 
 font = cv2.FONT_HERSHEY_DUPLEX
 SMART_RECOGNITION = 1
@@ -22,10 +21,6 @@ class Recognizer():
         self.method = method
         self.conf_threshold = conf_threshold
         self.data = db.load_database()
-
-        path_to_models = os.getcwd() + os.sep
-
-        db.load_net(path_to_models)
 
         # by default we use 0 but we never know if there's any camera added to device, use it
         if source == -1 and len(sys.argv) > 1:

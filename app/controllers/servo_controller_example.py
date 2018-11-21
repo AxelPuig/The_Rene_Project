@@ -1,4 +1,4 @@
-import app.controllers.servo_controller as sct
+import app as sct
 import time
 
 sct.setup_GPIO()

@@ -21,29 +21,23 @@ import time
 import sys
 import os
 
+dir_path = os.path.dirname(os.path.realpath(__file__))
+
 # Constants
 frame_process_size = [(192, 108), (256, 144), (320, 180), (300, 300), (426, 240), (640, 360), (1280, 720)][3]
 face_process_size = [(72, 72), (96, 96)][1]
 process_size_suffix = "_" + str(frame_process_size[0]) + "_" + str(frame_process_size[1])
 
-database_path = "..\\..\\Data\\database\\learn\\"
+database_path = dir_path + os.sep + ".." + os.sep + ".." + os.sep + "Data" + os.sep + "database" + os.sep + "learn" + os.sep
 
 # load our serialized face detector from disk
-proto_txt = "models\\deploy.prototxt"
-config_file = "models\\res10_300x300_ssd_iter_140000.caffemodel"
-net = None
+proto_txt = dir_path + os.sep + "models" + os.sep + "deploy.prototxt"
+config_file = dir_path + os.sep + "models" + os.sep + "res10_300x300_ssd_iter_140000.caffemodel"
+net = cv2.dnn.readNetFromCaffe(proto_txt, config_file)
 
 # load our serialized face embedding model from disk
-embedder_file = "models\\openface_nn4.small2.v1.t7"
-embedder = None
-
-def load_net(path_to_models):
-    global proto_txt, config_file, embedder_file, net, embedder
-    proto_txt = path_to_models + proto_txt
-    config_file = path_to_models + config_file
-    embedder_file = path_to_models + embedder_file
-    net = cv2.dnn.readNetFromCaffe(proto_txt, config_file)
-    embedder = cv2.dnn.readNetFromTorch(embedder_file)
+embedder_file = dir_path + os.sep + "models" + os.sep + "openface_nn4.small2.v1.t7"
+embedder = cv2.dnn.readNetFromTorch(embedder_file)
 
 def serialize(conf_threshold, *names):
 
