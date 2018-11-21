@@ -2,7 +2,9 @@
 This files contains examples and tests of the detectors
 """
 import cv2
-import app.detectors.detector as dt
+import os, sys
+sys.path.append(os.getcwd())
+import detector as dt
 
 detector = dt.Detector(.9, dt.FACE_DETECTION)
 
