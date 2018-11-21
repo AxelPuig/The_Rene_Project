@@ -15,10 +15,20 @@ class ServoController():
         """setup the GPIO_pin select as an output with a servo"""
         GPIO.setup(pin_number, GPIO.OUT)
 
+        self.ratio = 0.
         self.pwm = GPIO.PWM(pin_number, 100)  # 100 is the frequency of the PWM signal
         self.pwm.start(10)  # 10% is 0 for a servo
 
-    def set_percent(self, percent):
+    def set_ratio(self, ratio):
         """put the selected servo at the angle specified"""
-        duty_cycle = 10 + percent * 10  # construction of a standard servo signal
+        self.ratio = ratio
+        duty_cycle = 10 + ratio * 10  # construction of a standard servo signal
         self.pwm.ChangeDutyCycle(duty_cycle)
+
+    def get_ratio(self):
+        return self.ratio
+
+    def add_ratio(self, ratio):
+        new_ratio = self.ratio + ratio
+        if 1 >= new_ratio >= 0:
+            self.set_ratio(new_ratio)

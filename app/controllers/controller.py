@@ -5,13 +5,9 @@ import app.controllers.servo_controller as sct
 # define what percent we rotate every servo around each axis per frame
 percent_per_frame = .01
 
-resolution = (1280,720)
-
 class Controller():
 
     def __init__(self, conf_threshold, pins):
-        self.rotation = [0,0,0]
-
         assert len(pins) == 3
         sct.setup_GPIO()
         self.servos = []
@@ -33,29 +29,18 @@ class Controller():
         if faces:
             face = faces[0]
             x1,y1,x2,y2,confidence = faces[0]
+            height,width = out_frame.shape[0],out_frame.shape[1]
             x,y = (x1+x2)/2, (y1+y2)/2
             rotation = self.get_rotation()
-            if x > resolution[0]/2:
-                if rotation[1] <= 1-percent_per_frame:
-                    self.servos[1].set_percent(self.get_rotation()[1]+percent_per_frame)
-                else:
-                    self.servos[1].set_percent(1)
+            if x > width/2:
+                self.servos[1].add_ratio(percent_per_frame)
             else:
-                if rotation[1] >= percent_per_frame:
-                    self.servos[1].set_percent(self.get_rotation()[1]-percent_per_frame)
-                else:
-                    self.servos[1].set_percent(0)
+                self.servos[1].add_ratio(-percent_per_frame)
 
-            if y > resolution[1]/2:
-                if rotation[2] <= 1-percent_per_frame:
-                    self.servos[2].set_percent(self.get_rotation()[2]+percent_per_frame)
-                else:
-                    self.servos[2].set_percent(2)
+            if y > height/2:
+                self.servos[2].add_ratio(percent_per_frame)
             else:
-                if rotation[2] >= percent_per_frame:
-                    self.servos[2].set_percent(self.get_rotation()[2]-percent_per_frame)
-                else:
-                    self.servos[2].set_percent(0)
+                self.servos[2].add_ratio(-percent_per_frame)
 
 
     def start(self):
