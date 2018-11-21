@@ -24,7 +24,8 @@ def camera_get_frame(cam):
     return frame
 
 def camera_get_frame_adapted(cam):
-    """return a frame took by the camera in a numpy array format (adapted for compatibility with opencv because return a tuple with the frame in the second place"""
+    """return a frame took by the camera in a numpy array format
+    (adapted for compatibility with opencv because return a tuple with the frame in the second place)"""
     raw_capture = PiRGBArray(cam, size=(640, 480))
     cam.capture(raw_capture, format="bgr")
     frame = raw_capture.array
