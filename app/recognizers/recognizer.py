@@ -9,18 +9,21 @@ import cv2
 import app.recognizers.database as db
 #import app.rasp_compatibility.camera_utils as cam_utils
 import imutils
+import os
 
 font = cv2.FONT_HERSHEY_DUPLEX
 SMART_RECOGNITION = 1
 
 class Recognizer():
 
-    def __init__(self, conf_threshold, method, path_to_models="", source=-1, is_on_PC = True):
+    def __init__(self, conf_threshold, method, source=-1, is_on_PC = True):
         """ Method corresponds to the detection method used"""
 
         self.method = method
         self.conf_threshold = conf_threshold
         self.data = db.load_database()
+
+        path_to_models = os.getcwd() + os.sep
 
         db.load_net(path_to_models)
 

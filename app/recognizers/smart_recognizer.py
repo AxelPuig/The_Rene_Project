@@ -2,7 +2,9 @@
 This files contains examples and tests of the recognizers
 """
 import cv2
-import app.recognizers.recognizer as rc
+import os, sys
+sys.path.append(os.getcwd())
+import recognizer as rc
 
 recognizer = rc.Recognizer(.6, rc.SMART_RECOGNITION)
 
