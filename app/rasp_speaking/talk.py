@@ -18,4 +18,4 @@ rm temp.wav""")
     os.remove('parole.sh') # suppression du fichier shell
 
 
-#reneParle('Bonjour')
+#rene_parle('Bonjour')
