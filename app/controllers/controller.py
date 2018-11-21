@@ -17,7 +17,7 @@ class Controller():
                 self.servos.append(servo)
 
         self.conf_threshold = conf_threshold
-        self.detector = dt.Detector(conf_threshold, dt.FACE_DETECTION, path_to_models="..\\detectors\\")
+        self.detector = dt.Detector(conf_threshold, dt.FACE_DETECTION)
 
     def get_rotation(self):
         return self.rotation
