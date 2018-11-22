@@ -29,7 +29,7 @@ while True:
             else:
                 hello_in_process[data[0]['name']] = [1, 0]
     for i in hello_in_process:
-        if i not in hello_said:  # pour éviter du travail inutile.
+        if i not in hello_said and hello_in_process[i][0] != 0 :  # pour éviter du travail inutile.
             if hello_in_process[i][1] <= 1:
                 hello_in_process[i][1] += 1  # indique qu'une boucle de plus a été parcourue
             else:
