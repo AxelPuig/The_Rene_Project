@@ -2,9 +2,9 @@ import argparse
 
 from picamera import PiCamera
 
-from aiy.vision.inference import CameraInference
-from aiy.vision.models import face_detection
-from aiy.vision.annotator import Annotator
+from vision.inference import CameraInference
+from vision.models import face_detection
+from vision.annotator import Annotator
 
 def avg_joy_score(faces):
     if faces:
