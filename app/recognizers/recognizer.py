@@ -1,21 +1,22 @@
-"""
-This file contains different recognizer methods.
-"""
-import numpy as np
-import sys
-import time
+'''
 
+    Recognizer class using different NN (see database)
+
+'''
 import cv2
-import app.recognizers.database as db
 
-import platform
 import imutils
 import os
+import sys
+import numpy as np
+import time
 
-import os, sys
-
-dir_path = os.path.dirname(os.path.realpath(__file__)) + os.sep + '..'
+dir_path = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(dir_path)
+import database as db
+
+dir_path_capture = dir_path + os.sep + '..'
+sys.path.append(dir_path_capture)
 from capture import Capture
 
 font = cv2.FONT_HERSHEY_DUPLEX
