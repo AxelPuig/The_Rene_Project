@@ -1,5 +1,11 @@
-import app as ct
+import os
+import sys
 
-controller = ct.Controller(.9, [])
+dir_path = os.path.dirname(os.path.realpath(__file__)) + os.sep + '..' + os.sep + '..'
+sys.path.append(dir_path)
 
-controller.start()
+from app.controllers.controller import Controller
+
+controller = Controller([22,2,3])
+
+controller.start_example()
