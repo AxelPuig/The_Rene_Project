@@ -14,7 +14,7 @@ percent_per_frame = 0.05
 
 class Controller():
 
-    def __init__(self, pins, conf_threshold=.9, auto_capture=True):
+    def __init__(self, conf_threshold, pins, auto_capture=True):
         assert len(pins) == 3
 
         sct.setup_GPIO()

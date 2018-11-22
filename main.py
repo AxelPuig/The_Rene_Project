@@ -13,7 +13,7 @@ from app.controllers.controller import Controller
 cap = Capture()
 recognizer = Recognizer(auto_capture=False)
 chooser = ChoosePerson()
-controller = Controller()
+controller = Controller(.9, [-1,2,3])
 
 talker.ready()
 
