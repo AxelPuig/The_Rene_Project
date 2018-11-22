@@ -23,7 +23,7 @@ while True:
     res, frame = cap.read()
 
     people, _ = recognizer.find_people(frame)
-
+    
     person = chooser.choose(people)
 
     # action = detect_action(frame, person)
@@ -32,9 +32,11 @@ while True:
 
     controller.move(person, frame)
 
+
     # ---------- END MAIN CODE ----------
 
     # Display results
     print(people, person)
     # cv2.imshow("Debug window", frame)
+
     cv2.waitKey(1)

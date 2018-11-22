@@ -9,7 +9,7 @@ import app.detectors.detector as dt
 import app.controllers.servo_controller as sct
 
 # define what percent we rotate every servo around each axis per frame
-percent_per_frame = 0.05
+coefficient_proportionnel = 0.5
 
 
 class Controller():
@@ -35,16 +35,14 @@ class Controller():
             face = faces[0]
             x1,y1,x2,y2,confidence = faces[0]
             height,width = out_frame.shape[0],out_frame.shape[1]
-            x,y = (x1+x2)/2, (y1+y2)/2
-            if x > width/2:
-                self.servos[0].add_ratio(percent_per_frame)
-            else:
-                self.servos[0].add_ratio(-percent_per_frame)
 
-            if y > height/2:
-                self.servos[1].add_ratio(percent_per_frame)
-            else:
-                self.servos[1].add_ratio(-percent_per_frame)
+            x, y = (x1+x2)/2, (y1+y2)/2
+            x, y = x/width, y/height
+            delta_x = x - 0.5
+            delta_y = y - 0.5
+
+            self.servos[0].add_ratio(delta_x * coefficient_proportionnel)
+            self.servos[1].add_ratio(delta_y * coefficient_proportionnel)
 
     def move(self, person, frame):
         if person:
@@ -63,7 +61,7 @@ class Controller():
 
     def start_example(self):
         while True:
-            print(self.next_move())
+            self.next_move()
             if cv2.waitKey(1) != -1:
                 break
 
