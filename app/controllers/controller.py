@@ -3,7 +3,7 @@ import app.detectors.detector as dt
 import app.controllers.servo_controller as sct
 
 # define what percent we rotate every servo around each axis per frame
-percent_per_frame = 5
+percent_per_frame = 0.05
 
 class Controller():
 
