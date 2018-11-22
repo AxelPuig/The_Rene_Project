@@ -7,7 +7,7 @@ def rene_parle(text):
     """Synthese vocale du texte saisi (text), par le Raspberry.
     Si on est sur l'ordi, ça print le texte"""
 
-    if platform.uname() == "raspberrypi":
+    if platform.uname()[1] == "raspberrypi":
         parole = open("parole.txt", "w") #création d'un fichier text
 
         parole.write("""#!/bin/bash
