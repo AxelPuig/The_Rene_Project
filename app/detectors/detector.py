@@ -13,11 +13,6 @@ dir_path = os.path.dirname(os.path.realpath(__file__)) + os.sep + '..'
 sys.path.append(dir_path)
 from capture import Capture
 
-print(Capture())
-
-if platform.uname()[1] == 'raspberrypi':
-    import app.rasp_compatibility.camera_utils as cam_utils
-
 frame_process_size = [(192, 108), (256, 144), (320, 180), (300, 300), (426, 240), (640, 360), (1280, 720)][4]
 net_models = [(dir_path + os.sep + "models" + os.sep + "deploy.prototxt",
                dir_path + os.sep + "models" + os.sep + "res10_300x300_ssd_iter_140000.caffemodel")]
@@ -44,17 +39,10 @@ class Detector():
 
         print("[INFO] starting camera...")
 
-        if os.uname()[1] != 'raspberrypi':
-            self.cap = cv2.VideoCapture(source)
-        else:
-            # adapt the capture method for the raspberry
-            self.cam = cam_utils.camera_init()
+        self.cap = Capture(source)
 
     def read(self):
-        if os.uname()[1] != 'raspberrypi':
-            return self.cap.read()
-        else:
-            return cam_utils.camera_get_frame_adapted(self.cam)
+        return self.cap.read()
 
     def process(self, image, data_on_frame=False):
         """
