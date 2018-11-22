@@ -20,12 +20,14 @@ class Controller():
         self.detector = dt.Detector(conf_threshold, dt.FACE_DETECTION)
 
     def next_move(self):
+        print("angle_y : " + str(int(100 * self.servos[0].ratio)))
         out_frame, faces = self.detector.next_frame(data_on_frame=True, show_frame=True)
         if faces:
             face = faces[0]
             x1,y1,x2,y2,confidence = faces[0]
             height,width = out_frame.shape[0],out_frame.shape[1]
             x,y = (x1+x2)/2, (y1+y2)/2
+            print("%.3f : %.3f"%(x/width,y/height))
             if x > width/2:
                 self.servos[0].add_ratio(percent_per_frame)
             else:
@@ -39,7 +41,7 @@ class Controller():
 
     def start(self):
         while True:
-            print(self.next_move())
+            self.next_move()
             if cv2.waitKey(1) != -1:
                 break
 
