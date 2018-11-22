@@ -46,7 +46,7 @@ class Controller():
 
     def start_example(self):
         while True:
-            self.next_move()
+            self.move()
             if cv2.waitKey(1) != -1:
                 break
 
