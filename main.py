@@ -28,5 +28,5 @@ while True:
 
     # Display results
     print(people)
-    cv2.imshow("coucou", frame)
+    cv2.imshow("Debug window", frame)
     cv2.waitKey(1)
