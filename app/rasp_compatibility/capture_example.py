@@ -1,5 +1,12 @@
 # coding: utf-8
+import os
+import sys
+
 import cv2
+
+dir_path = os.path.dirname(os.path.realpath(__file__)) + os.sep + '..' + os.sep + '..'
+sys.path.append(dir_path)
+
 import app.capture as cap
 
 def capture_camera():

@@ -55,3 +55,4 @@ class Capture():
     def __del__(self):
         if self.os != OS_RASPBERRY:
             self.cap.release()
+            
