@@ -9,7 +9,7 @@ import cv2
 import os
 
 if os.uname()[1] == 'raspberrypi':
-    import app.rasp_compatibility.camera_utils as cam_utils
+    import app.rasp_compatibility.camera as cam
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
 
@@ -43,13 +43,7 @@ class Detector():
             self.cap = cv2.VideoCapture(source)
         else:
             # adapt the capture method for the raspberry
-            self.cam = cam_utils.camera_init()
-
-    def read(self):
-        if os.uname()[1] != 'raspberrypi':
-            return self.cap.read()
-        else:
-            return cam_utils.camera_get_frame(self.cam)
+            self.cap = cam.RaspCamera(cam.RES_480)
 
     def process(self, image, data_on_frame=False):
         """
@@ -98,7 +92,7 @@ class Detector():
 
             t = time.time()
 
-            has_frame, frame = self.read()
+            has_frame, frame = self.cap.read()
             if not has_frame:
                 return None
 
