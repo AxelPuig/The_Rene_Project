@@ -5,4 +5,5 @@ class ChoosePerson():
         pass
 
     def choose(self, people):
-        return max(people, key=lambda person: person['confidence_name'])
+        if len(people) > 0:
+            return max(people, key=lambda person: person['confidence_name'])
