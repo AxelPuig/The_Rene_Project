@@ -1,4 +1,10 @@
 import cv2
+import os
+import sys
+
+dir_path = os.path.dirname(os.path.realpath(__file__)) + os.sep + '..' + os.sep + '..'
+sys.path.append(dir_path)
+
 import app.detectors.detector as dt
 import app.controllers.servo_controller as sct
 
@@ -40,9 +46,9 @@ class Controller():
             else:
                 self.servos[1].add_ratio(-percent_per_frame)
 
-    def move(self, face, frame):
-        if face:
-            x1, y1, x2, y2, confidence = face
+    def move(self, person, frame):
+        if person:
+            x1, y1, x2, y2 = person['box']
             height, width = frame.shape[0], frame.shape[1]
             x, y = (x1 + x2) / 2, (y1 + y2) / 2
             if x > width / 2:
