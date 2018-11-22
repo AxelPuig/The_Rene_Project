@@ -1,6 +1,6 @@
-import os
+import platform
 import cv2
-if os.uname()[1] == 'raspberrypi':
+if platform.uname()[1] == 'raspberrypi':
     import app.rasp_compatibility.camera_utils as cam_utils
 
 OS_RASPBERRY = 'raspberrypi'
