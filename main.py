@@ -16,7 +16,7 @@ talker.ready()
 while True:
     # ---------- MAIN CODE ----------
 
-    frame = cap.read()
+    res, frame = cap.read()
 
     people, _ = recognizer.find_people(frame)
 
