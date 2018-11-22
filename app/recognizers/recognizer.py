@@ -7,6 +7,7 @@ import time
 
 import cv2
 import app.recognizers.database as db
+
 import platform
 import imutils
 import os
@@ -36,11 +37,7 @@ class Recognizer():
             source = 0
 
         print("[INFO] starting camera...")
-
         self.cap = Capture(source)
-
-    def read(self):
-        return self.cap.read()
 
     def process(self, image, data_on_frame=False):
         """
@@ -141,7 +138,7 @@ class Recognizer():
 
             t = time.time()
 
-            has_frame, frame = self.read()
+            has_frame, frame = self.cap.read()
             if not has_frame:
                 return None
 

@@ -38,11 +38,7 @@ class Detector():
             source = 0
 
         print("[INFO] starting camera...")
-
-        self.cap = Capture(source)
-
-    def read(self):
-        return self.cap.read()
+        self.cap = Capture(source=source)
 
     def process(self, image, data_on_frame=False):
         """
@@ -91,7 +87,7 @@ class Detector():
 
             t = time.time()
 
-            has_frame, frame = self.read()
+            has_frame, frame = self.cap.read()
             if not has_frame:
                 return None
 
