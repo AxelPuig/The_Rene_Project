@@ -3,15 +3,20 @@
     Detector class using different NN models
 
 '''
+import platform
 import sys
 import time
 import cv2
-import os
+import os, sys
 
-if os.uname()[1] == 'raspberrypi':
+dir_path = os.path.dirname(os.path.realpath(__file__)) + os.sep + '..'
+sys.path.append(dir_path)
+from capture import Capture
+
+print(Capture())
+
+if platform.uname()[1] == 'raspberrypi':
     import app.rasp_compatibility.camera_utils as cam_utils
-
-dir_path = os.path.dirname(os.path.realpath(__file__))
 
 frame_process_size = [(192, 108), (256, 144), (320, 180), (300, 300), (426, 240), (640, 360), (1280, 720)][4]
 net_models = [(dir_path + os.sep + "models" + os.sep + "deploy.prototxt",

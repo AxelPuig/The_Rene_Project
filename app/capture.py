@@ -1,5 +1,6 @@
 import platform
 import cv2
+import os
 if platform.uname()[1] == 'raspberrypi':
     import app.rasp_compatibility.camera_utils as cam_utils
 
@@ -9,7 +10,7 @@ OS_RASPBERRY = 'raspberrypi'
 class Capture():
     def __init__(self, source=0):
 
-        self.os = os.uname()[1]
+        self.os = platform.uname()[1]
 
         if self.os == OS_RASPBERRY:
             self.cap = cam_utils.camera_init()
