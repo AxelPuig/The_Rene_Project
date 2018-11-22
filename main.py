@@ -1,10 +1,17 @@
-import cv2
+from talker import Talker
 
+talker = Talker()
+
+talker.start()
+
+import cv2
 from app.capture import Capture
 from app.recognizers.recognizer import Recognizer
 
 cap = Capture()
 recognizer = Recognizer(auto_capture=False)
+
+talker.ready()
 
 while True:
     # ---------- MAIN CODE ----------
@@ -15,7 +22,7 @@ while True:
 
     # Add choose person
 
-
+    talker.talk(people, None, None, verbose=False)
 
     # ---------- END MAIN CODE ----------
 
