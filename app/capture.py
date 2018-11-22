@@ -40,7 +40,7 @@ class Capture():
             frame = raw_capture.array
             return frame is not None, frame
         else:
-            return self.cap.read()[1]
+            return self.cap.read()
 
     def get_cap(self):
         return self.cap
