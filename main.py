@@ -13,7 +13,7 @@ from app.controllers.controller import Controller
 cap = Capture()
 recognizer = Recognizer(auto_capture=False)
 chooser = ChoosePerson()
-controller = Controller(.9, [-1,2,3], auto_capture = False)
+controller = Controller(.9, [-1, 2, 3], auto_capture=False)
 
 talker.ready()
 
@@ -31,7 +31,6 @@ while True:
     talker.talk(people, None, None, verbose=False)
 
     controller.move(person, frame)
-
 
     # ---------- END MAIN CODE ----------
 
