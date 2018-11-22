@@ -24,7 +24,7 @@ SMART_RECOGNITION = 1
 
 class Recognizer():
 
-    def __init__(self, conf_threshold, method, source=-1, auto_capture=True):
+    def __init__(self, conf_threshold=0.2, method=1, source=-1, auto_capture=True):
         """ Method corresponds to the detection method used"""
 
         self.method = method
@@ -126,7 +126,7 @@ class Recognizer():
                                 (255, 255, 255), 1)
         return (frame, dicts)
 
-    def find_people(self, frame):
+    def find_people(self, frame, data_on_frame=False):
         """
         Returns None if end of video, else returns a tuple (list of dicts, frame),
         where the list of dicts contains a dict for each face recognized containing this :
@@ -138,7 +138,7 @@ class Recognizer():
 
         if self.method == SMART_RECOGNITION:
 
-            out_frame, results = self.process(frame, True)
+            out_frame, results = self.process(frame, data_on_frame)
 
             return results, out_frame
 

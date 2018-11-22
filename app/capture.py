@@ -28,7 +28,7 @@ class Capture():
             if not frame_rate:
                 frame_rate = int(2*max_fps/3)
 
-            self.cap = PiCamera(sensor_mode=sensor_mode + 1, resolution=(width, height), framerate=frame_rate)
+            self.cam = PiCamera(sensor_mode=sensor_mode + 1, resolution=(width, height), framerate=frame_rate)
         else:
             self.cap = cv2.VideoCapture(source)
 
@@ -40,7 +40,7 @@ class Capture():
             frame = raw_capture.array
             return frame is not None, frame
         else:
-            return self.cap.read()
+            return self.cap.read()[1]
 
     def get_cap(self):
         return self.cap
