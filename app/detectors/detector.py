@@ -3,22 +3,20 @@
     Detector class using different NN models
 
 '''
-import sys
 import time
 import cv2
-import os
-
-if os.uname()[1] == 'raspberrypi':
-    import app.rasp_compatibility.camera_utils as cam_utils
+import os, sys
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
+dir_path_capture = dir_path + os.sep + '..'
+sys.path.append(dir_path_capture)
+from capture import Capture
 
 frame_process_size = [(192, 108), (256, 144), (320, 180), (300, 300), (426, 240), (640, 360), (1280, 720)][4]
 net_models = [(dir_path + os.sep + "models" + os.sep + "deploy.prototxt",
                dir_path + os.sep + "models" + os.sep + "res10_300x300_ssd_iter_140000.caffemodel")]
 font = cv2.FONT_HERSHEY_DUPLEX
 FACE_DETECTION = 0
-
 
 class Detector():
 
@@ -31,25 +29,8 @@ class Detector():
 
         self.net = cv2.dnn.readNetFromCaffe(proto, model)
 
-        # by default we use 0 but we never know if there's any camera added to device, use it
-        if source == -1 and len(sys.argv) > 1:
-            source = sys.argv[1]
-        else:
-            source = 0
-
         print("[INFO] starting camera...")
-
-        if os.uname()[1] != 'raspberrypi':
-            self.cap = cv2.VideoCapture(source)
-        else:
-            # adapt the capture method for the raspberry
-            self.cam = cam_utils.camera_init()
-
-    def read(self):
-        if os.uname()[1] != 'raspberrypi':
-            return self.cap.read()
-        else:
-            return cam_utils.camera_get_frame(self.cam)
+        self.cap = Capture(source=source)
 
     def process(self, image, data_on_frame=False):
         """
@@ -98,7 +79,7 @@ class Detector():
 
             t = time.time()
 
-            has_frame, frame = self.read()
+            has_frame, frame = self.cap.read()
             if not has_frame:
                 return None
 
