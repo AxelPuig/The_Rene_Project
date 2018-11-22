@@ -35,6 +35,6 @@ while True:
     # ---------- END MAIN CODE ----------
 
     # Display results
-    print(people)
-    cv2.imshow("Debug window", frame)
+    print(people, person)
+    # cv2.imshow("Debug window", frame)
     cv2.waitKey(1)
