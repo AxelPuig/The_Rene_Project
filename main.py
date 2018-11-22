@@ -23,7 +23,7 @@ while True:
     res, frame = cap.read()
 
     people, _ = recognizer.find_people(frame)
-    
+
     person = chooser.choose(people)
 
     # action = detect_action(frame, person)
