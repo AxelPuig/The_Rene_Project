@@ -20,12 +20,12 @@ class Controller():
         self.detector = dt.Detector(conf_threshold, dt.FACE_DETECTION)
 
     def next_move(self):
-        print("angle_y : " + str(int(100 * self.servos[0].ratio)))
         out_frame, faces = self.detector.next_frame(data_on_frame=True, show_frame=True)
         if faces:
             face = faces[0]
             x1,y1,x2,y2,confidence = faces[0]
             height,width = out_frame.shape[0],out_frame.shape[1]
+
             x, y = (x1+x2)/2, (y1+y2)/2
             x, y = x/width, y/height
             delta_x = x - 0.5
