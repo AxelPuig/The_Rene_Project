@@ -24,21 +24,22 @@ SMART_RECOGNITION = 1
 
 class Recognizer():
 
-    def __init__(self, conf_threshold, method, source=-1):
+    def __init__(self, conf_threshold, method, source=-1, auto_capture=True):
         """ Method corresponds to the detection method used"""
 
         self.method = method
         self.conf_threshold = conf_threshold
         self.data = db.load_database()
 
-        # by default we use 0 but we never know if there's any camera added to device, use it
-        if source == -1 and len(sys.argv) > 1:
-            source = sys.argv[1]
-        else:
-            source = 0
+        if auto_capture:
+            # by default we use 0 but we never know if there's any camera added to device, use it
+            if source == -1 and len(sys.argv) > 1:
+                source = sys.argv[1]
+            else:
+                source = 0
 
-        print("[INFO] starting camera...")
-        self.cap = Capture(source)
+            print("[INFO] starting camera...")
+            self.cap = Capture(source)
 
     def process(self, image, data_on_frame=False):
         """
@@ -124,6 +125,36 @@ class Recognizer():
                                 (y2 - y1) / 420.,
                                 (255, 255, 255), 1)
         return (frame, dicts)
+
+    def find_people(self, frame, data_on_frame=False):
+        """
+        Returns None if end of video, else returns a tuple (list of dicts, frame),
+        where the list of dicts contains a dict for each face recognized containing this :
+            "box": tuple (x1, y1, x2, y2)
+            "confidence_face": float (proba that the box corresponds to a face)
+            "name": str (name of the person detected)
+            "confidence_name": float (proba that the name corresponds to the face)
+        """
+
+        if self.method == SMART_RECOGNITION:
+
+            t = time.time()
+
+            has_frame, frame = self.cap.read()
+            if not has_frame:
+                return None
+
+            out_frame, results = self.process(frame, True)
+
+            delta_t = time.time() - t
+            fps = 1 / delta_t
+
+            if data_on_frame:
+                label = "FPS : {:.2f}".format(fps)
+                cv2.putText(out_frame, label, (5, 20), font, .4, (255, 255, 255), 1)
+
+            return results, out_frame
+
 
     def next_frame(self, data_on_frame=True, show_frame=False):
         """
