@@ -3,14 +3,13 @@
     Detector class using different NN models
 
 '''
-import platform
-import sys
 import time
 import cv2
 import os, sys
 
-dir_path = os.path.dirname(os.path.realpath(__file__)) + os.sep + '..'
-sys.path.append(dir_path)
+dir_path = os.path.dirname(os.path.realpath(__file__))
+dir_path_capture = dir_path + os.sep + '..'
+sys.path.append(dir_path_capture)
 from capture import Capture
 
 frame_process_size = [(192, 108), (256, 144), (320, 180), (300, 300), (426, 240), (640, 360), (1280, 720)][4]
@@ -18,7 +17,6 @@ net_models = [(dir_path + os.sep + "models" + os.sep + "deploy.prototxt",
                dir_path + os.sep + "models" + os.sep + "res10_300x300_ssd_iter_140000.caffemodel")]
 font = cv2.FONT_HERSHEY_DUPLEX
 FACE_DETECTION = 0
-
 
 class Detector():
 
@@ -30,12 +28,6 @@ class Detector():
         proto, model = net_models[self.method]
 
         self.net = cv2.dnn.readNetFromCaffe(proto, model)
-
-        # by default we use 0 but we never know if there's any camera added to device, use it
-        if source == -1 and len(sys.argv) > 1:
-            source = sys.argv[1]
-        else:
-            source = 0
 
         print("[INFO] starting camera...")
         self.cap = Capture(source=source)
