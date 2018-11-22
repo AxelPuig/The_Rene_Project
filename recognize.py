@@ -29,9 +29,9 @@ while True:
     for i in hello_in_process :
         if i not in hello_said: #pour éviter du travail inutile.
             if hello_in_process[i][1] <= 1:
-                hello_in_process[i][1] += 1 #indique qu'un boucle de plus a été parcourue
+                hello_in_process[i][1] += 1 #indique qu'une boucle de plus a été parcourue
             else:
-                hello_in_processe[i] = [0,0] #réinitialise si pas de 2ème reconnaissance en moins de 3 boucles parcourues.
+                hello_in_process[i] = [0,0] #réinitialise si pas de 2ème reconnaissance en moins de 3 boucles parcourues.
     print(hello_said)
     print(hello_in_process)
 
