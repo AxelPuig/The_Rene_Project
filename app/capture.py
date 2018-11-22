@@ -1,4 +1,6 @@
 import platform
+import sys
+
 import cv2
 
 OS_RASPBERRY = 'raspberrypi'
@@ -19,9 +21,14 @@ RES_480 = 6
 
 class Capture():
 
-    def __init__(self, source=0, sensor_mode=RES_480, frame_rate=0):
+    def __init__(self, source=-1, sensor_mode=RES_480, frame_rate=0):
         """initialize the camera and grab a reference to the raw camera capture and return a camera object"""
         self.os = platform.uname()[1]
+
+        if source == -1 and len(sys.argv) > 1:
+            source = sys.argv[1]
+        else:
+            source = 0
 
         if self.os == OS_RASPBERRY:
             width, height, max_fps = sensor_modes[sensor_mode]
