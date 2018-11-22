@@ -3,7 +3,7 @@ import app.detectors.detector as dt
 import app.controllers.servo_controller as sct
 
 # define what percent we rotate every servo around each axis per frame
-percent_per_frame = .01
+percent_per_frame = 0.05
 
 class Controller():
 
@@ -27,14 +27,14 @@ class Controller():
             height,width = out_frame.shape[0],out_frame.shape[1]
             x,y = (x1+x2)/2, (y1+y2)/2
             if x > width/2:
+                self.servos[0].add_ratio(percent_per_frame)
+            else:
+                self.servos[0].add_ratio(-percent_per_frame)
+
+            if y > height/2:
                 self.servos[1].add_ratio(percent_per_frame)
             else:
                 self.servos[1].add_ratio(-percent_per_frame)
-
-            if y > height/2:
-                self.servos[2].add_ratio(percent_per_frame)
-            else:
-                self.servos[2].add_ratio(-percent_per_frame)
 
 
     def start(self):
