@@ -20,9 +20,13 @@ while True:
 
     people, _ = recognizer.find_people(frame)
 
-    # Add choose person
+    # person = choose_person(persons)
+
+    # action = detect_action(frame, person)
 
     talker.talk(people, None, None, verbose=False)
+
+    # move(person, action)
 
     # ---------- END MAIN CODE ----------
 
