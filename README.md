@@ -13,7 +13,7 @@ Educative project built during second CentraleSupélec 2018 coding week
 -	Say “Hello” with the name of the person
 
 ## Main structure
-```
+```python
 while True:
 	frame = get_frame()
 	persons = recognize(frame) # returns list of dicts
