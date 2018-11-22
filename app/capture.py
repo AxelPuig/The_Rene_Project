@@ -1,12 +1,10 @@
 import platform
 import cv2
+
 from picamera.array import PiRGBArray
 from picamera import PiCamera
 
 OS_RASPBERRY = 'raspberrypi'
-
-if platform.uname()[1] == OS_RASPBERRY:
-    import app.rasp_compatibility.camera_utils as cam_utils
 
 # sensor modes as detailed in https://picamera.readthedocs.io/en/release-1.13/fov.html#sensor-modes
 sensor_modes = [(1920,1080,30),(3280,2464,15),(3280,2464,15),(1640,1232,40),(1640,922,40),(1280,720,90),(640,480,90)]

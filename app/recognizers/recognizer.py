@@ -7,11 +7,16 @@ import time
 
 import cv2
 import app.recognizers.database as db
-import os
-if os.uname()[1] == 'raspberrypi':
-    import app.rasp_compatibility.camera as cam
+
+import platform
 import imutils
 import os
+
+import os, sys
+
+dir_path = os.path.dirname(os.path.realpath(__file__)) + os.sep + '..'
+sys.path.append(dir_path)
+from capture import Capture
 
 font = cv2.FONT_HERSHEY_DUPLEX
 SMART_RECOGNITION = 1
@@ -32,12 +37,7 @@ class Recognizer():
             source = 0
 
         print("[INFO] starting camera...")
-
-        if os.uname()[1] != 'raspberrypi':
-            self.cap = cv2.VideoCapture(source)
-        else:
-            # adapt the capture method for the raspberry
-            self.cap = cam.RaspCamera(cam.RES_480)
+        self.cap = Capture(source)
 
     def process(self, image, data_on_frame=False):
         """
