@@ -126,7 +126,7 @@ class Recognizer():
                                 (255, 255, 255), 1)
         return (frame, dicts)
 
-    def find_people(self, frame, data_on_frame=False):
+    def find_people(self, frame):
         """
         Returns None if end of video, else returns a tuple (list of dicts, frame),
         where the list of dicts contains a dict for each face recognized containing this :
@@ -138,20 +138,7 @@ class Recognizer():
 
         if self.method == SMART_RECOGNITION:
 
-            t = time.time()
-
-            has_frame, frame = self.cap.read()
-            if not has_frame:
-                return None
-
             out_frame, results = self.process(frame, True)
-
-            delta_t = time.time() - t
-            fps = 1 / delta_t
-
-            if data_on_frame:
-                label = "FPS : {:.2f}".format(fps)
-                cv2.putText(out_frame, label, (5, 20), font, .4, (255, 255, 255), 1)
 
             return results, out_frame
 
