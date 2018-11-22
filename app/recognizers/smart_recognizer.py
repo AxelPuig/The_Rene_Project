@@ -2,8 +2,11 @@
 This files contains examples and tests of the recognizers
 """
 import cv2
-import os, sys
-sys.path.append(os.getcwd())
+import os
+import sys
+
+dir_path = os.path.dirname(os.path.realpath(__file__))
+sys.path.append(dir_path)
 import recognizer as rc
 
 recognizer = rc.Recognizer(.6, rc.SMART_RECOGNITION)

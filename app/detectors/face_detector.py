@@ -3,7 +3,8 @@ This files contains examples and tests of the detectors
 """
 import cv2
 import os, sys
-sys.path.append(os.getcwd())
+dir_path = os.path.dirname(os.path.realpath(__file__))
+sys.path.append(dir_path)
 import detector as dt
 
 detector = dt.Detector(.9, dt.FACE_DETECTION)
