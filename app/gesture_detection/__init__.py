@@ -20,16 +20,17 @@ def skin_detector(frame):  # define a function to blur the "non-skin" pixels
     skinMask = cv2.dilate(skinMask, kernel, iterations=2)
     skinMask = cv2.GaussianBlur(skinMask, (3, 3), 0)
     skin = cv2.bitwise_and(frame, frame, mask=skinMask)
-    new_frame = np.hstack([frame, skin])
-    return new_frame
+    # new_frame = np.hstack([frame, skin])
+    return skin
 
 
 def is_the_hand_open(region, frame, display):
     x1, y1, x2, y2 = region
-    x1 = int(max(x1, 0))
-    x2 = int(max(x2, 0))
-    y1 = int(max(y1, 0))
-    y2 = int(max(y2, 0))
+    width, height = frame.shape
+    x1 = int(min(max(x1, 0), width-2))
+    x2 = int(min(max(x2, 0), width-1))
+    y1 = int(min(max(y1, 0), height-2))
+    y2 = int(min(max(y2, 0), height-1))
     print(x1, x2, y1, y2, frame.shape)
     roi = frame[x1:x2, y1:y2]
     if display:
@@ -91,21 +92,16 @@ def is_the_hand_open(region, frame, display):
 def gesture_detection(frame, person, display=False):
     if not person:
         return 0
-    frame = imutils.resize(frame)
+    # frame = imutils.resize(frame)
     frame = skin_detector(frame)
-    frame = cv2.flip(frame, 1)
     region = list(person['box'])
     largeur = region[2] - region[0]
     hauteur = region[3] - region[1]
-    for coordinate in range(len(region)):
-        if coordinate == 0:
-            region[coordinate] = int(region[coordinate] - largeur * 1.75)
-        if coordinate == 1:
-            region[coordinate] = int(region[coordinate] - hauteur * 0.5)
-        if coordinate == 2:
-            region[coordinate] = int(region[coordinate] - largeur * 1.25)
-        if coordinate == 3:
-            region[coordinate] = int(region[coordinate])
+    region[0] = int(region[0] - largeur * 1.75)
+    region[1] = int(region[1] - hauteur * 0.5)
+    region[2] = int(region[2] - largeur * 1.25)
+    region[3] = int(region[3])
+
     if is_the_hand_open(region, frame, display) == 1:
         if display:
             cv2.putText(frame, 'Say Hello', (10, 50), font, 2, (0, 0, 255), 3, cv2.LINE_AA)
