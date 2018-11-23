@@ -54,9 +54,7 @@ class Controller():
 
         if self.nobody_rate >= 5:
             self.servos[0].set_ratio(0.2)
-            time.sleep(0.2)
             self.servos[0].set_ratio(0.8)
-            time.sleep(0.2)
             self.servos[0].set_ratio(0.5)
             self.servos[1].set_ratio(0.5)
             self.nobody_rate = 0
