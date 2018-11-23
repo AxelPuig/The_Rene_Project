@@ -22,18 +22,12 @@ SMART_RECOGNITION = 1
 
 class Recognizer():
 
-    def __init__(self, conf_threshold=0.2, method=1, source=-1, auto_capture=False):
+    def __init__(self, conf_threshold=0.2, method=1):
         """ :param method corresponds to the detection method used"""
 
         self.method = method
         self.conf_threshold = conf_threshold
         self.data = db.load_database()
-
-        if auto_capture:
-            # by default we use 0 but we never know if there's any camera added to device, use it
-
-            print("[INFO] starting camera...")
-            self.cap = Capture()
 
     def process(self, image, data_on_frame=False):
         """
@@ -135,39 +129,6 @@ class Recognizer():
             out_frame, results = self.process(frame, data_on_frame)
 
             return results, out_frame
-
-
-    def next_frame(self, data_on_frame=True, show_frame=False):
-        """
-        Returns None if end of video, else returns a tuple (frame, list of dicts),
-        where the list of dicts contains a dict for each face recognized containing this :
-            "box": tuple (x1, y1, x2, y2)
-            "confidence_face": float (proba that the box corresponds to a face)
-            "name": str (name of the person detected)
-            "confidence_name": float (proba that the name corresponds to the face)
-        """
-
-        if self.method == SMART_RECOGNITION:
-
-            t = time.time()
-
-            has_frame, frame = self.cap.read()
-            if not has_frame:
-                return None
-
-            out_frame, results = self.process(frame, True)
-
-            delta_t = time.time() - t
-            fps = 1 / delta_t
-
-            if data_on_frame:
-                label = "FPS : {:.2f}".format(fps)
-                cv2.putText(out_frame, label, (5, 20), font, .4, (255, 255, 255), 1)
-
-            if show_frame:
-                cv2.imshow("Face recognition", out_frame)
-
-            return out_frame, results
 
     def close_window(self):
         cv2.destroyAllWindows()
