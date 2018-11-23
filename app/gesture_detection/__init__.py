@@ -94,9 +94,9 @@ def is_the_hand_open(region, frame, display):
     largeur = max(approx[:, 0, 0]) - min(approx[:, 0, 0])
     longueur = max(approx[:, 0, 1]) - min(approx[:, 0, 1])
     ratio = longueur / largeur
-    if ratio > 1.1:
+    if ratio > 1.2:
         return 1  # Hand open
-    if 0.6 < ratio < 1.1:
+    if 0.6 < ratio < 1.2:
         return 2  # Hand closed
 
 
