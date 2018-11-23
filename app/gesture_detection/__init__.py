@@ -75,7 +75,7 @@ def is_the_hand_open(region, frame, display):
     # define area of hull and area of hand
     areahull = cv2.contourArea(hull)
     print(areahull, roi.shape[0] * roi.shape[1] / 10)
-    if areahull > (roi.shape[0] * roi.shape[1]) / 10:
+    if areahull < (roi.shape[0] * roi.shape[1]) / 10:
         return 0
 
     areacnt = cv2.contourArea(cnt)
