@@ -61,7 +61,7 @@ class Recognizer():
         (h, w) = frame.shape[:2]
 
         # construct a blob from the image
-        image_blob = cv2.dnn.blobFromImage(cv2.resize(frame, db.frame_process_size), 1.0, db.frame_process_size,
+        image_blob = cv2.dnn.blobFromImage(frame, 1.0, frame.shape,
                                            (104.0, 177.0, 123.0), swapRB=False, crop=False)
 
         # apply OpenCV's deep learning-based face detector to localize
