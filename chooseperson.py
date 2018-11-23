@@ -10,7 +10,7 @@ class ChoosePerson():
                 distances = []
                 for other_person in people:
                     box = other_person["box"]
-                    distances.append(self.distance(self, box))
+                    distances.append(self.distance(box))
                 index = distances.index(min(distances))
                 self.person = people[index]
             else:
