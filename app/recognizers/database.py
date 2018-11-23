@@ -28,7 +28,7 @@ frame_process_size = [(192, 108), (256, 144), (320, 180), (300, 300), (426, 240)
 face_process_size = [(72, 72), (96, 96)][1]
 process_size_suffix = "_" + str(frame_process_size[0]) + "_" + str(frame_process_size[1])
 
-database_path = dir_path + os.sep + ".." + os.sep + ".." + os.sep + "Data" + os.sep + "database" + os.sep + "learn" + os.sep
+database_path = dir_path + os.sep + ".." + os.sep + ".." + os.sep + "data" + os.sep + "facerecognition_database" + os.sep + "learn" + os.sep
 
 # load our serialized face detector from disk
 proto_txt = dir_path + os.sep + "models" + os.sep + "deploy.prototxt"
