@@ -1,6 +1,7 @@
 """ Main function. Give an argument 'disp' when running to display the image """
 
 from talker import Talker
+from app.gesture_detection import gesture_detection
 
 talker = Talker()
 
@@ -38,7 +39,7 @@ while True:
 
     person = chooser.choose(people)
 
-    # action = detect_action(frame, person)
+    action = gesture_detection(frame, person)
 
     talker.talk(people, None, None, verbose=False)
 
@@ -48,6 +49,7 @@ while True:
 
     # Display results
     print(people, person)
+    print(action)
     if display_image:
         cv2.imshow("Debug window", frame)
 
