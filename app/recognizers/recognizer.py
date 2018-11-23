@@ -55,7 +55,7 @@ class Recognizer():
         # resize the frame to have a width of 600 pixels (while
         # maintaining the aspect ratio), and then grab the image
         # dimensions
-        frame = imutils.resize(image, height=600)
+        frame = imutils.resize(image, width=600)
         (h, w) = frame.shape[:2]
 
         # construct a blob from the image
