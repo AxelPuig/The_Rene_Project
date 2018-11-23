@@ -1,6 +1,10 @@
 """
 This file is the main python file to run on raspberry
 """
+import os, sys
+
+sys.path.append(os.path.dirname(os.path.realpath(__file__)) + os.sep + '..')
+
 import app.rasp_speaking.talk as talk
 
 talk.rene_parle('Bonjour les amis, je suis en train de démarrer')
@@ -23,14 +27,14 @@ while True:
             if person['name'] not in hello_said:  # Si bonjour non dit pour cette personne
                 if person['name'] not in hello_in_process:
                     hello_in_process[person['name']] = [1,
-                                                         0]  # [1 pour le nombre de fois reconnu, 0 à 2 pour les nombre de boucles parcourues depuis la dernière reconnaissance de data[name], au plus 2
+                                                        0]  # [1 pour le nombre de fois reconnu, 0 à 2 pour les nombre de boucles parcourues depuis la dernière reconnaissance de data[name], au plus 2
                 elif hello_in_process[person['name']][0] == 1:
                     talk.rene_parle('Bonjour ' + person['name'])
                     hello_said.append(person['name'])
                 else:
                     hello_in_process[person['name']] = [1, 0]
     for i in hello_in_process:
-        if i not in hello_said and hello_in_process[i][0] != 0 :  # pour éviter du travail inutile.
+        if i not in hello_said and hello_in_process[i][0] != 0:  # pour éviter du travail inutile.
             if hello_in_process[i][1] <= 2:
                 hello_in_process[i][1] += 1  # indique qu'une boucle de plus a été parcourue
             else:

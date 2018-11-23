@@ -1,6 +1,10 @@
 """
 This file is the main python file to run on raspberry
 """
+import os, sys
+
+sys.path.append(os.path.dirname(os.path.realpath(__file__)) + os.sep + '..')
+
 import app.rasp_speaking.talk as talk
 
 talk.rene_parle('Bonjour les amis, je suis en train de démarrer')
