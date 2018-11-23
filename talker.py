@@ -7,7 +7,7 @@ class Talker:
         self.hello_in_process = {}
 
     def start(self):
-        talk.rene_parle("Salut a tous les copains ! Je me prépare.")
+        talk.rene_parle("Salut a vous les copains ! Je me prépare.")
 
     def ready(self):
         talk.rene_parle("Je suis prêt !")
