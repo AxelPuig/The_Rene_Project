@@ -6,8 +6,8 @@ dir_path = os.path.dirname(os.path.realpath(__file__)) + os.sep + '..' + os.sep 
 from rene.capture import Capture
 
 frame_process_size = [(192, 108), (256, 144), (320, 180), (300, 300), (426, 240), (640, 360), (1280, 720)][4]
-net_model = (os.path.join(dir_path, ["rene", "detector", "models", "deploy.prototxt"]),
-             os.path.join(dir_path, ["rene", "detector", "models", "res10_300x300_ssd_iter_140000.caffemodel"]))
+net_model = (os.path.join(dir_path, "rene", "detector", "models", "deploy.prototxt"),
+             os.path.join(dir_path, "rene", "detector", "models", "res10_300x300_ssd_iter_140000.caffemodel"))
 font = cv2.FONT_HERSHEY_DUPLEX
 
 
