@@ -72,6 +72,7 @@ def is_the_hand_open(region, frame, display):
 
     # define area of hull and area of hand
     areahull = cv2.contourArea(hull)
+    print(areahull, print(roi.shape[0] * roi.shape[1]))
     areacnt = cv2.contourArea(cnt)
 
     # find the percentage of area not covered by hand in convex hull
@@ -102,10 +103,10 @@ def gesture_detection(frame, person, display=False):
     region = list(person['box']).copy()
     largeur = region[2] - region[0]
     hauteur = region[3] - region[1]
-    region[0] = int(region[0] - largeur * 1.75)
+    region[0] = int(region[0] - largeur * 1.5)
     region[1] = int(region[1] - hauteur * 0.5)
     region[2] = int(region[2] - largeur * 1.25)
-    region[3] = int(region[3])
+    region[3] = int(region[3] + hauteur * 0.5)
 
     if is_the_hand_open(region, frame, display) == 1:
         if display:
