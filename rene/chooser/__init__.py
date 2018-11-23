@@ -5,6 +5,8 @@ class Chooser():
         self.person = None
 
     def choose(self, people):
+        """ Choose the person who is the closest to the person focused on the last frame """
+
         if people:
             if self.person is not None:
                 distances = []
@@ -20,6 +22,8 @@ class Chooser():
         return self.person
 
     def distance(self, box):
+        """ Computes the distance between the person of the precedent frame and a box. """
+
         x1_a, y1_a, x2_a, y2_a = self.person["box"]
         x1_b, y1_b, x2_b, y2_b = box
         return (x1_a - x1_b)**2 + (x2_a - x2_b)**2 + (y1_a - y1_b)**2 + (y2_a - y2_b)**2
