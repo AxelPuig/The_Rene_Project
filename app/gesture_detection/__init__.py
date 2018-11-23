@@ -93,7 +93,7 @@ def is_the_hand_open(region, frame, display):
     ratio = longueur / largeur
     if ratio > 1.1:
         return 1  # Hand open
-    if 0.8 < ratio < 1.1:
+    if 0.6 < ratio < 1.1:
         return 2  # Hand closed
 
 
@@ -105,9 +105,9 @@ def gesture_detection(frame, person, display=False):
     region = list(person['box']).copy()
     largeur = region[2] - region[0]
     hauteur = region[3] - region[1]
-    region[0] = int(region[0] - largeur * 1.5)
+    region[0] = int(region[0] - largeur * 2)
     region[1] = int(region[1] - hauteur * 0.5)
-    region[2] = int(region[2] - largeur * 1.25)
+    region[2] = int(region[2] - largeur * 1.2)
     region[3] = int(region[3] + hauteur * 0.5)
 
     if is_the_hand_open(region, frame, display) == 1:
