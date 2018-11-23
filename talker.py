@@ -50,7 +50,11 @@ class Talker:
             print(self.hello_in_process)
 
         if action == 1 and self.time_since_last_action > 1:
-            talk.read_file("app/rasp_speaking/hey")
+            # talk.read_file("app/rasp_speaking/hey")
+            if person['confidence_name'] > 0.95:
+                talk.rene_parle("Comment ça va " + person['name'] + " ?")
+            else:
+                talk.rene_parle("Comment ça va ?")
             self.time_since_last_action = 0
 
         elif action == 2 and self.time_since_last_action > 1:
