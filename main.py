@@ -7,7 +7,7 @@ To debug the program, arguments can be added:
 """
 
 # Importing talking functionality to inform that the program is running
-from talker import Talker
+from rene.talker import Talker
 
 talker = Talker()
 talker.start()
@@ -18,7 +18,7 @@ import sys
 # Importing custom objects and function
 from rene.capture import Capture
 from rene.recognizers.recognizer import Recognizer
-from chooser import Chooser
+from rene.chooser import Chooser
 from rene.controllers.controller import Controller
 from rene.gesture_detection import gesture_detection
 
