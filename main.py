@@ -1,9 +1,9 @@
 """
 Main function running the full program.
-To debug the program, an argument word can be added, containing:
-- 'd' for display, to display the frame taken by the pi
-- 'g' for gesture, to display the detection operations on the frame
-- 'v' for verbose, to print more information about what are the functions doing.
+To debug the program, arguments can be added:
+- 'display', to display the frame taken by the pi
+- 'gesture', to display the detection operations on the frame
+- 'verbose', to print more information about what are the functions doing.
 """
 
 # Importing talking functionality to inform that the program is running
@@ -13,7 +13,7 @@ talker = Talker()
 talker.start()
 
 import cv2
-import argparse
+import sys
 
 # Importing custom objects and function
 from app.capture import Capture
@@ -23,12 +23,9 @@ from app.controllers.controller import Controller
 from app.gesture_detection import gesture_detection
 
 # Parsing
-parser = argparse.ArgumentParser(description="Rene")
-parser.add_argument("display", help="display image", type=str, nargs='?', default="no")
-args = parser.parse_args()
-display_image = 'd' in args.display
-display_gesture = 'g' in args.display
-verbose = 'v' in args.display
+display_image = 'display' in sys.argv
+display_gesture = 'gesture' in sys.argv
+verbose = 'verbose' in sys.argv
 
 # Objects initialisation
 cap = Capture()  # To read the frames from camera
