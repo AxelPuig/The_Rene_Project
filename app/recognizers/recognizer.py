@@ -23,6 +23,8 @@ from capture import Capture
 font = cv2.FONT_HERSHEY_DUPLEX
 SMART_RECOGNITION = 1
 
+RATIO_DETECTION = 0.5
+
 class Recognizer():
 
     def __init__(self, conf_threshold=0.2, method=1, source=-1, auto_capture=True):
@@ -55,7 +57,7 @@ class Recognizer():
         # resize the frame to have a width of 600 pixels (while
         # maintaining the aspect ratio), and then grab the image
         # dimensions
-        frame = imutils.resize(image, height=240)
+        frame = imutils.resize(image, height=480 * RATIO_DETECTION)
         (h, w) = frame.shape[:2]
 
         # construct a blob from the image
@@ -104,7 +106,7 @@ class Recognizer():
                 proba = preds[j]
                 name = le.classes_[j]
 
-                dicts.append({"box": (x1, y1, x2, y2),
+                dicts.append({"box": (x1/RATIO_DETECTION, y1/RATIO_DETECTION, x2/RATIO_DETECTION, y2/RATIO_DETECTION),
                               "confidence_face": confidence,
                               "name": name,
                               "confidence_name": proba})
