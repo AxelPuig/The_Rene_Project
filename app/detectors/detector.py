@@ -19,7 +19,7 @@ net_models = [(dir_path + os.sep + "models" + os.sep + "deploy.prototxt",
                dir_path + os.sep + "models" + os.sep + "res10_300x300_ssd_iter_140000.caffemodel")]
 font = cv2.FONT_HERSHEY_DUPLEX
 FACE_DETECTION = 0
-RATIO_DETECTION = 0.5
+RATIO_DETECTION = 0.25
 class Detector():
 
     def __init__(self, conf_threshold, method, source=-1):
