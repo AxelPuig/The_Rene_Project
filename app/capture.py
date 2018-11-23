@@ -50,9 +50,9 @@ class Capture():
             return self.cap.read()
 
     def get_cap(self):
+        """returns the object used to acquire frames"""
         return self.cap
 
     def __del__(self):
         if self.os != OS_RASPBERRY:
             self.cap.release()
-            

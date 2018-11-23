@@ -201,4 +201,6 @@ def load_database():
     le = pickle.loads(open(database_path + "le" + process_size_suffix + ".pickle", "rb").read())
     return database, recognizer, le
 
-#serialize(.9, "Romain", "Alexis", "Axel", "Remi", "Fabien")
+#record("Axel")
+
+#serialize(.9, "Romain", "Axel", "Remi", "Fabien")

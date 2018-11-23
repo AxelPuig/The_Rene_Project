@@ -25,7 +25,7 @@ class ServoController():
         self.ratio = ratio
         duty_cycle = 10 + ratio * 10  # construction of a standard servo signal
         self.pwm.ChangeDutyCycle(duty_cycle)
-        time.sleep(0.5)
+        time.sleep(0.25)
         self.rest()
 
     def get_ratio(self):
