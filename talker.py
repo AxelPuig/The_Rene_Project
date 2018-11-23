@@ -48,12 +48,11 @@ class Talker:
 
         if action == 1 and self.time_since_last_action > 1:
             talk.read_file("app/rasp_speaking/hey")
+            self.time_since_last_action = 0
 
         elif action == 2 and self.time_since_last_action > 1:
             talk.rene_parle("Ok, je vous ai pris en photo !")
+            self.time_since_last_action = 0
 
         else:
             self.time_since_last_action += 1
-
-        if action != 0:
-            self.time_since_last_action = 0
