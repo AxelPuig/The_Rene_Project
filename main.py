@@ -39,7 +39,6 @@ while True:
 
     person = chooser.choose(people)
 
-    cv2.imshow("Before", frame)
     action = gesture_detection(frame, person, display_image)
 
     talker.talk(people, None, None, verbose=False)
