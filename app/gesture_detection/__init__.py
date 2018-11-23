@@ -26,6 +26,7 @@ def skin_detector(frame):  # define a function to blur the "non-skin" pixels
 
 def is_the_hand_open(region, frame, display):
     x1, y1, x2, y2 = region
+    print(region)
     width, height, _ = frame.shape
     x1 = int(min(max(x1, 0), width-2))
     x2 = int(min(max(x2, 1), width-1))
@@ -94,7 +95,7 @@ def gesture_detection(frame, person, display=False):
         return 0
     # frame = imutils.resize(frame)
     frame = skin_detector(frame)
-    region = list(person['box'])
+    region = list(person['box']).copy()
     largeur = region[2] - region[0]
     hauteur = region[3] - region[1]
     region[0] = int(region[0] - largeur * 1.75)
