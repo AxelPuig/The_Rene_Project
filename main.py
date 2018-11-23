@@ -15,7 +15,7 @@ parser.add_argument("display", help="display image",
                     type=str, nargs='?', default="no_display")
 args = parser.parse_args()
 
-display_image = args.display = 'disp'
+display_image = args.display == 'disp'
 
 from app.capture import Capture
 from app.recognizers.recognizer import Recognizer
@@ -39,7 +39,7 @@ while True:
 
     person = chooser.choose(people)
 
-    action = gesture_detection(frame, person)
+    action = gesture_detection(frame, person, display_image)
 
     talker.talk(people, None, None, verbose=False)
 

@@ -24,16 +24,17 @@ def skin_detector(frame):  # define a function to blur the "non-skin" pixels
     return new_frame
 
 
-def is_the_hand_open(region, frame):
+def is_the_hand_open(region, frame, display):
     x1, y1, x2, y2 = region
     x1 = int(max(x1, 0))
     x2 = int(max(x2, 0))
     y1 = int(max(y1, 0))
     y2 = int(max(y2, 0))
-    # print(x1, x2, y1, y2)
-    roi = frame[100:300, 100:300]
-    cv2.imshow("roi", roi)
-    cv2.rectangle(frame, (region[0], region[1]), (region[2], region[3]), (0, 255, 0), 0)
+    print(x1, x2, y1, y2, frame.shape)
+    roi = frame[x1:x2, y1:y2]
+    if display:
+        cv2.imshow("roi", roi)
+        cv2.rectangle(frame, (region[0], region[1]), (region[2], region[3]), (0, 255, 0), 0)
     hsv = cv2.cvtColor(roi, cv2.COLOR_BGR2HSV)
     # define range of skin color in HSV
     lower_skin = np.array([0, 87, 80], dtype=np.uint8)
@@ -87,7 +88,9 @@ def is_the_hand_open(region, frame):
         return 2  # Hand closed
 
 
-def gesture_detection(frame, person):
+def gesture_detection(frame, person, display=False):
+    if not person:
+        return 0
     frame = imutils.resize(frame)
     frame = skin_detector(frame)
     frame = cv2.flip(frame, 1)
@@ -103,10 +106,12 @@ def gesture_detection(frame, person):
             region[coordinate] = int(region[coordinate] - largeur * 1.25)
         if coordinate == 3:
             region[coordinate] = int(region[coordinate])
-    if is_the_hand_open(region, frame) == 1:
-        cv2.putText(frame, 'Say Hello', (10, 50), font, 2, (0, 0, 255), 3, cv2.LINE_AA)
+    if is_the_hand_open(region, frame, display) == 1:
+        if display:
+            cv2.putText(frame, 'Say Hello', (10, 50), font, 2, (0, 0, 255), 3, cv2.LINE_AA)
         return 1
-    if is_the_hand_open(region, frame) == 2:
-        cv2.putText(frame, 'Take a picture', (10, 50), font, 2, (0, 0, 255), 3, cv2.LINE_AA)
+    if is_the_hand_open(region, frame, display) == 2:
+        if display:
+            cv2.putText(frame, 'Take a picture', (10, 50), font, 2, (0, 0, 255), 3, cv2.LINE_AA)
         return 2
     return 0
