@@ -39,7 +39,7 @@ class Talker:
 
         if self.nobody_rate >= 5:
             self.nobody_rate == 0
-            talk.read_file("nobody")
+            talk.read_file("app/rasp_speaking/nobody")
 
         if verbose:
             print(self.hello_said)
