@@ -1,4 +1,4 @@
 import talk
 
-talk.file_read("nobody")
+talk.read_file("nobody")
 
