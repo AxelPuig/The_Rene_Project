@@ -1,15 +1,15 @@
+"""
+Code working, but not optimal with redundant functions.
+"""
+
 import cv2
 import numpy as np
-import math
-import imutils
-import argparse
 
 font = cv2.FONT_HERSHEY_SIMPLEX
 
+# Thresholds to isolate skin (HSV)
 lower1 = np.array([0, 44, 95], dtype="uint8")  # Define the range of colors that seems to be skin color
 upper1 = np.array([12, 129, 186], dtype="uint8")
-# # lower = np.array([0, 0, 0], dtype="uint8")  # Define the range of colors that seems to be skin color
-# upper = np.array([255, 129, 186], dtype="uint8")
 lower2 = np.array([165, 44, 95], dtype="uint8")  # Define the range of colors that seems to be skin color
 upper2 = np.array([180, 129, 186], dtype="uint8")
 
@@ -25,13 +25,11 @@ def skin_detector(frame):  # define a function to blur the "non-skin" pixels
     skinMask = cv2.dilate(skinMask, kernel, iterations=2)
     skinMask = cv2.GaussianBlur(skinMask, (3, 3), 0)
     skin = cv2.bitwise_and(frame, frame, mask=skinMask)
-    # new_frame = np.hstack([frame, skin])
     return skin
 
 
 def is_the_hand_open(region, frame, display):
     x1, y1, x2, y2 = region
-    # print(region)
     width, height, _ = frame.shape
     x1 = int(min(max(x1, 0), width - 1))
     x2 = int(min(max(x2, 0), width - 1))
@@ -39,61 +37,53 @@ def is_the_hand_open(region, frame, display):
     y2 = int(min(max(y2, 0), height - 1))
     if x1 - x2 == 0 or y1 - y2 == 0:
         return 0
-    # print(x1, x2, y1, y2, frame.shape)
     roi = frame[y1:y2, x1:x2]
     if display:
         cv2.rectangle(frame, (region[0], region[1]), (region[2], region[3]), (0, 255, 0), 0)
         cv2.imshow("roi", roi)
     hsv = cv2.cvtColor(roi, cv2.COLOR_BGR2HSV)
-    # define range of skin color in HSV
 
-    # extract skin colur image
     mask = cv2.inRange(hsv, lower1, upper1)
     mask += cv2.inRange(hsv, lower2, upper2)
 
-    # extrapolate the hand to fill dark spots within
+    # Extrapolate the hand to fill dark spots within
     mask = cv2.dilate(mask, kernel, iterations=4)
 
-    # blur the image
+    # Blur the image
     mask = cv2.GaussianBlur(mask, (5, 5), 100)
 
-    # find contours
+    # Find contours
     _, contours, hierarchy = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
-    # find contour of max area(hand)
+    # Find contour of max area(hand)
     if len(contours) == 0:
         return 0
     cnt = max(contours, key=lambda x: cv2.contourArea(x))
 
-    # approx the contour a little
+    # Approx the contour a little
     epsilon = 0.0005 * cv2.arcLength(cnt, True)
     approx = cv2.approxPolyDP(cnt, epsilon, True)
 
-    # make convex hull around hand
+    # Make convex hull around hand
     hull = cv2.convexHull(cnt)
 
-    # define area of hull and area of hand
+    # Define area of hull and area of hand
     areahull = cv2.contourArea(hull)
-    # print(areahull, roi.shape[0] * roi.shape[1] / 10)
     if areahull < (roi.shape[0] * roi.shape[1]) / 10:
         return 0
 
-    areacnt = cv2.contourArea(cnt)
-
-    # find the percentage of area not covered by hand in convex hull
-    arearatio = ((areahull - areacnt) / areacnt) * 100
-
-    # find the defects in convex hull with respect to hand
+    # Find the defects in convex hull with respect to hand
     hull = cv2.convexHull(approx, returnPoints=False)
     defects = cv2.convexityDefects(approx, hull)
 
     if defects is None:
         return 0
     approx = np.array(approx)
-    # print(approx)
-    largeur = max(approx[:, 0, 0]) - min(approx[:, 0, 0])
-    longueur = max(approx[:, 0, 1]) - min(approx[:, 0, 1])
-    ratio = longueur / largeur
+
+    # Determining if the hand is open or closed by calculating the ratio height / width of the bounding box
+    width = max(approx[:, 0, 0]) - min(approx[:, 0, 0])
+    height = max(approx[:, 0, 1]) - min(approx[:, 0, 1])
+    ratio = height / width
     if ratio > 1.2:
         return 1  # Hand open
     if 0.6 < ratio < 1.2:
@@ -101,9 +91,17 @@ def is_the_hand_open(region, frame, display):
 
 
 def gesture_detection(frame, person, display=False):
+    """
+    Main function used in main.py.
+    It detects a hand in a zone int the right side of the head
+    :returns:
+        - 0 if no hand detected
+        - 1 if hand raised
+        - 2 if hand closed
+    """
+
     if not person:
         return 0
-    # frame = imutils.resize(frame)
     frame = skin_detector(frame)
     region = list(person['box']).copy()
     largeur = region[2] - region[0]

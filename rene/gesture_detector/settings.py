@@ -1,32 +1,36 @@
 import cv2
-import imutils
-import numpy as np
 
-from rene.gesture_detector.color_choosing import Settings
+class Settings:
+    """
+    Class helping to find the right parameters with trackbar.
+    Main functions are update_settings_window to update the frame, and get_settings_window_values to get
+    trackbar values
+    """
+    def __init__(self, n_trackbar):
+        """ Creates a window with the frame and [n_trackbar] trackbars """
+        def nothing(x):
+            pass
 
-def skin_detector(grabbed,frame): #define a function to blur the "non-skin" pixels
-    frame = imutils.resize(frame, width = 400)
-    converted = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-    skinMask = cv2.inRange(converted, lower, upper)
-    skin = cv2.bitwise_and(frame, frame, mask = skinMask)
-    new_frame = np.hstack([frame, skin])
-    return ret, new_frame
+        # Create a window
+        cv2.namedWindow('settings')
 
+        self.trackbar_names = []
 
-s = Settings(6)
+        for i in range(n_trackbar):
+            self.trackbar_names.append(str(i))
+            cv2.createTrackbar(str(i), 'settings', 0, 255, nothing)
 
-k = -1
-while k == -1:
-    # get frame
-    v1, v2, v3, v4, v5, v6 = s.get_settings_window_values()
+    def update_settings_window(self, frame):
+        """ Updates the frame and returns the key pressed """
+        cv2.imshow('settings', frame)
+        return cv2.waitKey(1)
 
-    lower = np.array([v1, v3, v5], dtype = "uint8")       #Define the range of colors that seems to be skin color
-    upper = np.array([v2, v4, v6], dtype = "uint8")
-    ret = None
-    frame = cv2.imread("C:\\Users\\aypee\\PycharmProjects\\The_Rene_Project\\rene\\gesture_detector\\image.jpg")
+    def settings_window_closed(self):
+        """ Returns True if closed """
+        return cv2.getWindowProperty('settings', 0) < 0
 
-    _, new_frame = skin_detector(ret,frame)
-
-    k = s.update_settings_window(new_frame)
-
-cv2.destroyAllWindows()
+    def get_settings_window_values(self):
+        try:
+            return [cv2.getTrackbarPos(trackbar_name, 'settings') for trackbar_name in self.trackbar_names]
+        except AttributeError:
+            raise (Exception("Settings Window not initialised correctly"))
