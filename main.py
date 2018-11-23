@@ -12,7 +12,7 @@ import argparse
 
 parser = argparse.ArgumentParser(description="Rene")
 parser.add_argument("display", help="display image",
-                    type=str, nargs='?', default="no_display")
+                    type=str, nargs='?', default="no")
 args = parser.parse_args()
 
 display_image = 'disp' in args.display
