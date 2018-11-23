@@ -7,6 +7,8 @@ import time
 import cv2
 import os, sys
 
+import imutils
+
 dir_path = os.path.dirname(os.path.realpath(__file__))
 dir_path_capture = dir_path + os.sep + '..'
 sys.path.append(dir_path_capture)
@@ -17,7 +19,7 @@ net_models = [(dir_path + os.sep + "models" + os.sep + "deploy.prototxt",
                dir_path + os.sep + "models" + os.sep + "res10_300x300_ssd_iter_140000.caffemodel")]
 font = cv2.FONT_HERSHEY_DUPLEX
 FACE_DETECTION = 0
-
+RATIO_DETECTION = 0.5
 class Detector():
 
     def __init__(self, conf_threshold, method, source=-1):
@@ -40,10 +42,11 @@ class Detector():
         :return: tuple with frame and list of tuples like : (x1, y1, x2, y2, confidence)
         """
         out_frame = image.copy()
+        out_frame = imutils.resize(out_frame, height=480*RATIO_DETECTION)
         height = out_frame.shape[0]
         width = out_frame.shape[1]
         # shrink the image down to size @frame_process_size
-        blob = cv2.dnn.blobFromImage(out_frame, 1.0, frame_process_size, [104, 117, 123], False, False)
+        blob = cv2.dnn.blobFromImage(out_frame, 1.0, out_frame.shape, [104, 117, 123], False, False)
         self.net.setInput(blob)
         detections = self.net.forward()
         faces = []
