@@ -14,7 +14,7 @@ def rene_parle(text):
 pico2wave -l fr-FR -w temp.wav 'lac """ + text +
 """'
 amixer sset 'PCM' 95%
-aplay -q temp.wav
+omxplayer temp.wav
 rm temp.wav""")
     
         parole.close()
