@@ -38,7 +38,7 @@ def is_the_hand_open(region, frame, display):
     y1 = int(min(max(y1, 0), height-2))
     y2 = int(min(max(y2, 1), height-1))
     print(x1, x2, y1, y2, frame.shape)
-    roi = frame[x1:x2, y1:y2]
+    roi = frame[y1:y2, x1:x2]
     if display:
         cv2.rectangle(frame, (region[0], region[1]), (region[2], region[3]), (0, 255, 0), 0)
         cv2.imshow("roi", roi)
