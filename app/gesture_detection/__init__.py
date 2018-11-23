@@ -93,6 +93,7 @@ def is_the_hand_open(region, frame, display):
 
 
 def gesture_detection(frame, person, display=False):
+    print(frame)
     if not person:
         return 0
     # frame = imutils.resize(frame)
