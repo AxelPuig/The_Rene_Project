@@ -16,8 +16,10 @@ coefficient_proportionnel_z = 0.5
 
 
 class Controller():
+    def __init__(self, conf_threshold=.9, pins=None, auto_capture=False):
+        if pins is None:
+            pins = [-1, 2, 3]
 
-    def __init__(self, conf_threshold, pins, auto_capture=True):
         assert len(pins) == 3
 
         sct.setup_GPIO()

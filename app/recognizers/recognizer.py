@@ -25,7 +25,7 @@ SMART_RECOGNITION = 1
 
 class Recognizer():
 
-    def __init__(self, conf_threshold=0.2, method=1, source=-1, auto_capture=True):
+    def __init__(self, conf_threshold=0.2, method=1, source=-1, auto_capture=False):
         """ :param method corresponds to the detection method used"""
 
         self.method = method
