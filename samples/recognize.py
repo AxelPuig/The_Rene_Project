@@ -5,7 +5,7 @@ import os, sys
 
 sys.path.append(os.path.dirname(os.path.realpath(__file__)) + os.sep + '..')
 
-import rene.rasp_speaking.talk as talk
+import rene.talker.speak as talk
 
 talk.rene_parle('Bonjour les amis, je suis en train de démarrer')
 

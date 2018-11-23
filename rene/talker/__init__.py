@@ -1,40 +1,45 @@
-import rene.rasp_speaking.talk as talk
+import rene.talker.speak as talk
 
 
 class Talker:
+    """ Makes the raspberry talk """
+
     def __init__(self):
         self.hello_said = []
         self.hello_in_process = {}
         self.nobody_rate = 0
         self.time_since_last_action = 0
 
-    def start(self):
+    def inform_preparing(self):
         talk.rene_parle("Salut a vous les copains ! Je me prépare.")
 
-    def ready(self):
+    def inform_ready(self):
         talk.rene_parle("Je suis prêt !")
 
-    def talk(self, people, action, person, verbose=False):
+    def talk(self, people, action, person):
+        """ Says something adapted to the situation """
 
+        # Say hello if meeting someone for the first time since last run
         for person in people:
             if person['confidence_name'] >= 0.95:
-                if person['name'] not in self.hello_said:  # Si bonjour non dit pour cette personne
+                if person['name'] not in self.hello_said:  # Says hello to this person
                     if person['name'] not in self.hello_in_process:
-                        self.hello_in_process[person['name']] = [1,
-                                                                 0]  # [1 pour le nombre de fois reconnu, 0 à 2 pour les nombre de boucles parcourues depuis la dernière reconnaissance de data[name], au plus 2
+                        self.hello_in_process[person['name']] = [1, 0]
+                        # 1 pour le number of times he has been recognized,
+                        # 0 to 2 for the number of loops iterations since recognition of data[name], maximum 2
                     elif self.hello_in_process[person['name']][0] == 1:
                         talk.rene_parle('Bonjour ' + person['name'])
                         self.hello_said.append(person['name'])
                     else:
                         self.hello_in_process[person['name']] = [1, 0]
         for i in self.hello_in_process:
-            if i not in self.hello_said and self.hello_in_process[i][0] != 0:  # pour éviter du travail inutile.
+            if i not in self.hello_said and self.hello_in_process[i][0] != 0:  # To avoid useless work
                 if self.hello_in_process[i][1] <= 2:
-                    self.hello_in_process[i][1] += 1  # indique qu'une boucle de plus a été parcourue
+                    self.hello_in_process[i][1] += 1  # Remembers a loop has been run
                 else:
-                    self.hello_in_process[i] = [0,
-                                                0]  # réinitialise si pas de 2ème reconnaissance en moins de 3 boucles parcourues.
+                    self.hello_in_process[i] = [0, 0]  # Reset if still no recognition after 2 loops
 
+        # Checking if someone in the frame
         if len(people) == 0:
             self.nobody_rate += 1
         else:
@@ -43,14 +48,11 @@ class Talker:
         if self.nobody_rate >= 5:
             self.nobody_rate = 0
 
-            talk.read_file("rene/rasp_speaking/nobody")
-
-        if verbose:
-            print(self.hello_said)
-            print(self.hello_in_process)
+            # Says he can't find anyone !
+            talk.read_file("rene/speaking/nobody")
 
         if action == 1 and self.time_since_last_action > 1:
-            # talk.read_file("rene/rasp_speaking/hey")
+            # Says how are you if hand raised and has waited since last action
             if person['confidence_name'] > 0.95:
                 talk.rene_parle("Comment ça va " + person['name'] + " ?")
             else:
@@ -58,6 +60,7 @@ class Talker:
             self.time_since_last_action = 0
 
         elif action == 2 and self.time_since_last_action > 1:
+            # Says photo taken (that's wrong) if hand closed and has waited since last action
             talk.rene_parle("Ok, je vous ai pris en photo !")
             self.time_since_last_action = 0
 

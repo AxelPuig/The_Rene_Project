@@ -10,7 +10,7 @@ To debug the program, arguments can be added:
 from rene.talker import Talker
 
 talker = Talker()
-talker.start()
+talker.inform_preparing()
 
 import cv2
 import sys
@@ -34,7 +34,7 @@ chooser = Chooser()  # To choose someone to look at
 controller = Controller()  # To control the servos
 
 # Say we are ready
-talker.ready()
+talker.inform_ready()
 
 while True:
     # ---------- MAIN CODE ----------

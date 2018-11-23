@@ -10,9 +10,7 @@ def rene_parle(text):
     if platform.uname()[1] == "raspberrypi":
         parole = open("parole.txt", "w")  # création d'un fichier texte
 
-        parole.write("""#!/bin/bash
-pico2wave -l fr-FR -w temp.wav '""" + text +
-                     """'
+        parole.write("""#!/bin/bash\npico2wave -l fr-FR -w temp.wav '""" + text + """'
                      amixer sset 'PCM' 95%
                      omxplayer temp.wav
                      rm temp.wav""")
