@@ -36,6 +36,6 @@ while True:
 
     # Display results
     print(people, person)
-    # cv2.imshow("Debug window", frame)
+    cv2.imshow("Debug window", frame)
 
     cv2.waitKey(1)
