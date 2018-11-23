@@ -1,4 +1,5 @@
 """ Main function. Give an argument 'disp' when running to display the image """
+import time
 
 from talker import Talker
 from app.gesture_detection import gesture_detection
