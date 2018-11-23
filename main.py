@@ -42,7 +42,7 @@ while True:
 
     action = gesture_detection(frame, person, display_gesture)
 
-    talker.talk(people, None, None, verbose=False)
+    talker.talk(people, action, None, verbose=False)
 
     controller.move(person, frame)
 

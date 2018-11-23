@@ -6,6 +6,7 @@ class Talker:
         self.hello_said = []
         self.hello_in_process = {}
         self.nobody_rate = 0
+        self.time_since_last_action = 0
 
     def start(self):
         talk.rene_parle("Salut a vous les copains ! Je me prépare.")
@@ -44,3 +45,15 @@ class Talker:
         if verbose:
             print(self.hello_said)
             print(self.hello_in_process)
+
+        if action == 1 and self.time_since_last_action > 1:
+            talk.read_file("app/rasp_speaking/hey")
+
+        elif action == 2 and self.time_since_last_action > 1:
+            talk.rene_parle("Ok, je vous ai pris en photo !")
+
+        else:
+            self.time_since_last_action = 0
+
+        if action == 0:
+            self.time_since_last_action += 1
