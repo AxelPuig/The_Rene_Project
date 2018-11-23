@@ -59,6 +59,7 @@ class Controller():
             time.sleep(0.3)
             self.servos[0].set_ratio(0.5)
             self.servos[1].set_ratio(0.5)
+            self.nobody_rate = 0
 
 
 
