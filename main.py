@@ -19,7 +19,7 @@ import sys
 from rene.capture import Capture
 from rene.recognizers.recognizer import Recognizer
 from rene.chooser import Chooser
-from rene.controllers.controller import Controller
+from rene.controller import Controller
 from rene.gesture_detection import gesture_detection
 
 # Parsing

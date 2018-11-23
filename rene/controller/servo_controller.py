@@ -1,18 +1,24 @@
 import RPi.GPIO as GPIO
 import time
 
+
 def setup_GPIO():
     GPIO.setmode(GPIO.BCM)
     GPIO.setwarnings(False)
+
 
 def clear():
     GPIO.cleanup()
 
 
 class ServoController():
+    """
+    Low level servo control class.
+    Main method are set_ratio to move the camera to a specific position, and add_ratio for a relative move
+    """
 
     def __init__(self, pin_number):
-        """setup the GPIO_pin select as an output with a servo"""
+        """Setup the GPIO_pin select as an output with a servo"""
         GPIO.setup(pin_number, GPIO.OUT)
 
         self.ratio = 0.
@@ -21,9 +27,12 @@ class ServoController():
         self.set_ratio(0.5)
 
     def set_ratio(self, ratio):
-        """put the selected servo at the angle specified"""
+        """
+        Put the selected servo at the ratio specified
+        :param ratio: 0 to go full left, 1 to go full right
+        """
         self.ratio = ratio
-        duty_cycle = 10 + ratio * 10  # construction of a standard servo signal
+        duty_cycle = 10 + ratio * 10  # Construction of a standard servo signal
         self.pwm.ChangeDutyCycle(duty_cycle)
         time.sleep(0.25)
         self.rest()
@@ -32,9 +41,11 @@ class ServoController():
         return self.ratio
 
     def add_ratio(self, ratio):
+        """ Relative move """
         new_ratio = self.ratio + ratio
         if 1 >= new_ratio >= 0:
             self.set_ratio(new_ratio)
 
     def rest(self):
+        """ Stops forcing the servo to be at the right position. Can remove trembling issues """
         self.pwm.ChangeDutyCycle(0)

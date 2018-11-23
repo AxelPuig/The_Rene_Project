@@ -1,4 +1,4 @@
-import servo_controller as sct
+import rene.controller.servo_controller as sct
 import time
 
 sct.setup_GPIO()
