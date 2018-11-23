@@ -6,17 +6,20 @@ import argparse
 
 font = cv2.FONT_HERSHEY_SIMPLEX
 
-lower = np.array([0, 44, 95], dtype="uint8")  # Define the range of colors that seems to be skin color
-upper = np.array([12, 129, 186], dtype="uint8")
-# lower = np.array([0, 0, 0], dtype="uint8")  # Define the range of colors that seems to be skin color
-upper = np.array([255, 129, 186], dtype="uint8")
+lower1 = np.array([0, 44, 95], dtype="uint8")  # Define the range of colors that seems to be skin color
+upper1 = np.array([12, 129, 186], dtype="uint8")
+# # lower = np.array([0, 0, 0], dtype="uint8")  # Define the range of colors that seems to be skin color
+# upper = np.array([255, 129, 186], dtype="uint8")
+lower2 = np.array([165, 44, 95], dtype="uint8")  # Define the range of colors that seems to be skin color
+upper2 = np.array([180, 129, 186], dtype="uint8")
 
 kernel = np.ones((3, 3), np.uint8)
 
 
 def skin_detector(frame):  # define a function to blur the "non-skin" pixels
     converted = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-    skinMask = cv2.inRange(converted, lower, upper)
+    skinMask = cv2.inRange(converted, lower1, upper1)
+    skinMask += cv2.inRange(converted, lower2, upper2)
     kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (8, 8))
     skinMask = cv2.erode(skinMask, kernel, iterations=1)
     skinMask = cv2.dilate(skinMask, kernel, iterations=2)
@@ -37,15 +40,14 @@ def is_the_hand_open(region, frame, display):
     print(x1, x2, y1, y2, frame.shape)
     roi = frame[x1:x2, y1:y2]
     if display:
-        cv2.imshow("roi", roi)
         cv2.rectangle(frame, (region[0], region[1]), (region[2], region[3]), (0, 255, 0), 0)
+        cv2.imshow("roi", roi)
     hsv = cv2.cvtColor(roi, cv2.COLOR_BGR2HSV)
     # define range of skin color in HSV
-    lower_skin = lower
-    upper_skin = upper
 
     # extract skin colur image
-    mask = cv2.inRange(hsv, lower_skin, upper_skin)
+    mask = cv2.inRange(hsv, lower1, upper1)
+    mask += cv2.inRange(hsv, lower2, upper2)
 
     # extrapolate the hand to fill dark spots within
     mask = cv2.dilate(mask, kernel, iterations=4)
