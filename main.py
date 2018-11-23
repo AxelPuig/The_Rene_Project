@@ -35,34 +35,21 @@ talker.ready()
 while True:
     # ---------- MAIN CODE ----------
 
-    t = time.time()
     res, frame = cap.read()
-    t1 = time.time() - t
 
-    t = time.time()
     people, _ = recognizer.find_people(frame)
-    t2 = time.time() - t
 
-    t = time.time()
     person = chooser.choose(people)
-    t3 = time.time() - t
 
-    t = time.time()
     action = gesture_detection(frame, person, display_gesture)
-    t4 = time.time() - t
 
-    t = time.time()
     talker.talk(people, action, person, verbose=False)
-    t5 = time.time() - t
 
-    t = time.time()
     controller.move(person, frame)
-    t6 = time.time() - t
 
     # ---------- END MAIN CODE ----------
 
     # Display results
-    print(t1, t2, t3, t4, t5, t6)
     if verbose:
         print(people, person)
         print(action)
