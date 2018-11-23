@@ -1,3 +1,11 @@
+import os
+import sys
+import platform
+
+if platform.uname()[1] != "raspberrypi":
+    raise SystemError("This code must be run on raspberry")
+
+sys.path.append(os.path.dirname(os.path.realpath(__file__)) + os.sep + '..')
 import rene.controller.servo_controller as sct
 import time
 

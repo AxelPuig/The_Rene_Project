@@ -1,11 +1,11 @@
-# coding: utf-8
+""" Shows frame with Capture class """
+
 import os
 import sys
 
 import cv2
 
-dir_path = os.path.dirname(os.path.realpath(__file__)) + os.sep + '..' + os.sep + '..'
-sys.path.append(dir_path)
+sys.path.append(os.path.dirname(os.path.realpath(__file__)) + os.sep + '..')
 
 import rene.capture as cap
 
@@ -26,6 +26,8 @@ def capture_camera():
 
             # interval to let the system process imshow
             key = cv2.waitKey(10)
+            if key != -1:
+                return
 
 capture_camera()
 
