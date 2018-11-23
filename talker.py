@@ -5,6 +5,7 @@ class Talker:
     def __init__(self):
         self.hello_said = []
         self.hello_in_process = {}
+        self.nobody_rate = 0
 
     def start(self):
         talk.rene_parle("Salut a vous les copains ! Je me prépare.")
@@ -32,7 +33,14 @@ class Talker:
                 else:
                     self.hello_in_process[i] = [0,
                                            0]  # réinitialise si pas de 2ème reconnaissance en moins de 3 boucles parcourues.
-                    
+
+        if len(people) == 0:
+            self.nobody_rate += 1
+
+        if self.nobody_rate >= 5:
+            self.nobody_rate = 0
+            talk.read_file("app/rasp_speaking/nobody")
+
         if verbose:
             print(self.hello_said)
             print(self.hello_in_process)
