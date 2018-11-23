@@ -91,7 +91,7 @@ def gesture_detection(frame, person):
     frame = imutils.resize(frame)
     frame = skin_detector(frame)
     frame = cv2.flip(frame, 1)
-    region = person['box']
+    region = list(person['box'])
     largeur = region[2] - region[0]
     hauteur = region[3] - region[1]
     for coordinate in range(len(region)):
