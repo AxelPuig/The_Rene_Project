@@ -11,7 +11,7 @@ def rene_parle(text):
         parole = open("parole.txt", "w") #création d'un fichier text
 
         parole.write("""#!/bin/bash
-pico2wave -l fr-FR -w temp.wav 'lac """ + text +
+pico2wave -l fr-FR -w temp.wav '""" + text +
 """'
 amixer sset 'PCM' 95%
 omxplayer temp.wav
