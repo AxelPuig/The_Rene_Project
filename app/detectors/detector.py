@@ -29,12 +29,6 @@ class Detector():
 
         self.net = cv2.dnn.readNetFromCaffe(proto, model)
 
-        # by default we use 0 but we never know if there's any camera added to device, use it
-        if source == -1 and len(sys.argv) > 1:
-            source = sys.argv[1]
-        else:
-            source = 0
-
         print("[INFO] starting camera...")
         self.cap = Capture(source=source)
 

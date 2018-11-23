@@ -12,6 +12,18 @@ Educative project built during second CentraleSupélec 2018 coding week
 -	Take orders with gestures, follow another person/ scan/ search and find (on clapping)
 -	Say “Hello” with the name of the person
 
+## Main structure
+```python
+while True:
+	frame = get_frame()
+	persons = recognize(frame) # returns list of dicts
+	person = choose_person(persons)
+	action = detect_action(frame, person)
+	talk(action, persons, person)
+	move(person, action)
+ ```
+The functions can eventualy be class methods
+
 ## Dependencies
 This project was built using:
 * Python **3.6.4**
@@ -30,7 +42,7 @@ This project was built using:
 * **Milon** *Romain*
 
 ## Raspberry Pi SSH access
-- Wifi : Iphone de Fabien
-- ip : 172.20.10.2
+- Wifi : Honor6X
+- ip : 192.168.43.70
 - id : pi
-- password : raspberry
+- password : umdpsn'aps
