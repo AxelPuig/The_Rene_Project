@@ -12,13 +12,10 @@ import numpy as np
 import time
 
 # update system path to allow imports from raspberry
-dir_path = os.path.dirname(os.path.realpath(__file__))
+dir_path = os.path.dirname(os.path.realpath(__file__) + '..' + os.sep + '..')
 sys.path.append(dir_path)
-import database as db
-
-dir_path_capture = dir_path + os.sep + '..'
-sys.path.append(dir_path_capture)
-from capture import Capture
+import rene.recognizers.database as db
+from rene.capture import Capture
 
 font = cv2.FONT_HERSHEY_DUPLEX
 SMART_RECOGNITION = 1
