@@ -23,8 +23,6 @@ from capture import Capture
 font = cv2.FONT_HERSHEY_DUPLEX
 SMART_RECOGNITION = 1
 
-RATIO_DETECTION = 0.5
-
 class Recognizer():
 
     def __init__(self, conf_threshold=0.2, method=1, source=-1, auto_capture=True):
@@ -57,11 +55,11 @@ class Recognizer():
         # resize the frame to have a width of 600 pixels (while
         # maintaining the aspect ratio), and then grab the image
         # dimensions
-        frame = imutils.resize(image, height=int(480 * RATIO_DETECTION))
+        frame = imutils.resize(image, height=600)
         (h, w) = frame.shape[:2]
 
         # construct a blob from the image
-        image_blob = cv2.dnn.blobFromImage(frame, 1.0, frame.shape,
+        image_blob = cv2.dnn.blobFromImage(cv2.resize(frame, db.frame_process_size), 1.0, db.frame_process_size,
                                            (104.0, 177.0, 123.0), swapRB=False, crop=False)
 
         # apply OpenCV's deep learning-based face detector to localize
@@ -106,10 +104,7 @@ class Recognizer():
                 proba = preds[j]
                 name = le.classes_[j]
 
-                dicts.append({"box": (int(x1/RATIO_DETECTION),
-                                      int(y1/RATIO_DETECTION),
-                                      int(x2/RATIO_DETECTION),
-                                      int(y2/RATIO_DETECTION)),
+                dicts.append({"box": (x1, y1, x2, y2),
                               "confidence_face": confidence,
                               "name": name,
                               "confidence_name": proba})
