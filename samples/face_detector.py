@@ -5,9 +5,9 @@ import cv2
 import os, sys
 dir_path = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(dir_path)
-import detector as dt
+from rene.detector import Detector
 
-detector = dt.Detector(.9, dt.FACE_DETECTION)
+detector = Detector()
 
 while True:
     detector.next_frame(data_on_frame=True, show_frame=True)

@@ -10,11 +10,11 @@ import rene.rasp_speaking.talk as talk
 talk.rene_parle('Bonjour les amis, je suis en train de démarrer')
 
 import cv2
-import rene.detectors.detector as detect
+from rene.detector import Detector
 
 talk.rene_parle('Jai presque terminé, encore quelques secondes')
 
-detector = detect.Detector(.6, detect.FACE_DETECTION)
+detector = Detector(.6)
 
 while True:
     frame, data = detector.next_frame(data_on_frame=False, show_frame=False)

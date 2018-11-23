@@ -10,7 +10,7 @@ dir_path = os.path.dirname(os.path.realpath(__file__)) + os.sep + '..' + os.sep 
 sys.path.append(dir_path)
 
 if ON_RASPBERRY:
-    import rene.detectors.detector as dt
+    import rene.detector as detector
     import rene.controller.servo_controller as sct
 
 # define what percent we rotate every servo around each axis per frame
@@ -40,7 +40,7 @@ class Controller():
         self.conf_threshold = conf_threshold
 
         if auto_capture:
-            self.detector = dt.Detector(conf_threshold, dt.FACE_DETECTION)
+            self.detector = detector.Detector(conf_threshold, detector.FACE_DETECTION)
 
         self.nobody_frame_count = 0
 

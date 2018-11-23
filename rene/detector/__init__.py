@@ -1,31 +1,27 @@
-'''
-
-    Detector class using different NN models
-
-'''
 import time
 import cv2
 import os, sys
 
-dir_path = os.path.dirname(os.path.realpath(__file__))
-dir_path_capture = dir_path + os.sep + '..'
-sys.path.append(dir_path_capture)
-from capture import Capture
+dir_path = os.path.dirname(os.path.realpath(__file__)) + os.sep + '..' + os.sep + '..'
+from rene.capture import Capture
 
 frame_process_size = [(192, 108), (256, 144), (320, 180), (300, 300), (426, 240), (640, 360), (1280, 720)][4]
-net_models = [(dir_path + os.sep + "models" + os.sep + "deploy.prototxt",
-               dir_path + os.sep + "models" + os.sep + "res10_300x300_ssd_iter_140000.caffemodel")]
+net_model = (os.path.join(dir_path, ["rene", "detector", "models", "deploy.prototxt"]),
+             os.path.join(dir_path, ["rene", "detector", "models", "res10_300x300_ssd_iter_140000.caffemodel"]))
 font = cv2.FONT_HERSHEY_DUPLEX
-FACE_DETECTION = 0
+
 
 class Detector():
+    """
+    Class detecting faces (no recognition).
+    Main function is next_frame, which returns detected faces
+    """
 
-    def __init__(self, conf_threshold, method, source=-1):
+    def __init__(self, conf_threshold=0.9, source=-1):
         """ Method corresponds to the detection method used"""
 
-        self.method = method
         self.conf_threshold = conf_threshold
-        proto, model = net_models[self.method]
+        proto, model = net_model
 
         self.net = cv2.dnn.readNetFromCaffe(proto, model)
 
@@ -39,6 +35,7 @@ class Detector():
         :param data_on_frame: returns the frame with rectangles and names around faces
         :return: tuple with frame and list of tuples like : (x1, y1, x2, y2, confidence)
         """
+
         out_frame = image.copy()
         height = out_frame.shape[0]
         width = out_frame.shape[1]
@@ -75,27 +72,25 @@ class Detector():
         where the list of tuples contains a tuple for each face detected containing (x1,y1,x2,y2,confidence)
         """
 
-        if self.method == FACE_DETECTION:
+        t = time.time()
 
-            t = time.time()
+        has_frame, frame = self.cap.read()
+        if not has_frame:
+            return None
 
-            has_frame, frame = self.cap.read()
-            if not has_frame:
-                return None
+        out_frame, results = self.process(frame, True)
 
-            out_frame, results = self.process(frame, True)
+        delta_t = time.time() - t
+        fps = 1 / delta_t
 
-            delta_t = time.time() - t
-            fps = 1 / delta_t
+        if data_on_frame:
+            label = "FPS : {:.2f}".format(fps)
+            cv2.putText(out_frame, label, (5, 20), font, .4, (255, 255, 255), 1)
 
-            if data_on_frame:
-                label = "FPS : {:.2f}".format(fps)
-                cv2.putText(out_frame, label, (5, 20), font, .4, (255, 255, 255), 1)
+        if show_frame:
+            cv2.imshow("Face detection", out_frame)
 
-            if show_frame:
-                cv2.imshow("Face detection", out_frame)
-
-            return out_frame, results
+        return out_frame, results
 
     def close_window(self):
         cv2.destroyAllWindows()
