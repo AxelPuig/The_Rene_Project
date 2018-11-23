@@ -8,8 +8,8 @@ font = cv2.FONT_HERSHEY_SIMPLEX
 
 lower = np.array([0, 44, 95], dtype="uint8")  # Define the range of colors that seems to be skin color
 upper = np.array([12, 129, 186], dtype="uint8")
-lower = np.array([0, 0, 0], dtype="uint8")  # Define the range of colors that seems to be skin color
-upper = np.array([255, 255, 255], dtype="uint8")
+# lower = np.array([0, 0, 0], dtype="uint8")  # Define the range of colors that seems to be skin color
+# upper = np.array([255, 255, 255], dtype="uint8")
 
 kernel = np.ones((3, 3), np.uint8)
 
@@ -93,7 +93,6 @@ def is_the_hand_open(region, frame, display):
 
 
 def gesture_detection(frame, person, display=False):
-    print(frame)
     if not person:
         return 0
     # frame = imutils.resize(frame)
