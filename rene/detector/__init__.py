@@ -25,9 +25,6 @@ class Detector():
 
         self.net = cv2.dnn.readNetFromCaffe(proto, model)
 
-        print("[INFO] starting camera...")
-        self.cap = Capture(source=source)
-
     def process(self, image, data_on_frame=False):
         """
         Processes frame and returns faces detected
@@ -65,32 +62,6 @@ class Detector():
                                 (int(x1 + (x2 - x1) / 20), int(y1 + (y1 - y2) / 40)), cv2.FONT_HERSHEY_DUPLEX,
                                 (y2 - y1) / 300., (255, 255, 255), 1)
         return out_frame, faces
-
-    def next_frame(self, data_on_frame=True, show_frame=False):
-        """
-        Returns None if end of video, else returns a tuple (frame, list tuples),
-        where the list of tuples contains a tuple for each face detected containing (x1,y1,x2,y2,confidence)
-        """
-
-        t = time.time()
-
-        has_frame, frame = self.cap.read()
-        if not has_frame:
-            return None
-
-        out_frame, results = self.process(frame, True)
-
-        delta_t = time.time() - t
-        fps = 1 / delta_t
-
-        if data_on_frame:
-            label = "FPS : {:.2f}".format(fps)
-            cv2.putText(out_frame, label, (5, 20), font, .4, (255, 255, 255), 1)
-
-        if show_frame:
-            cv2.imshow("Face detection", out_frame)
-
-        return out_frame, results
 
     def close_window(self):
         cv2.destroyAllWindows()
