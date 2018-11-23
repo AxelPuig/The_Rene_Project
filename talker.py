@@ -53,7 +53,7 @@ class Talker:
             talk.rene_parle("Ok, je vous ai pris en photo !")
 
         else:
-            self.time_since_last_action = 0
-
-        if action == 0:
             self.time_since_last_action += 1
+
+        if action != 0:
+            self.time_since_last_action = 0
