@@ -6,8 +6,8 @@ import argparse
 
 font = cv2.FONT_HERSHEY_SIMPLEX
 
-lower = np.array([0, 87, 80], dtype="uint8")  # Define the range of colors that seems to be skin color
-upper = np.array([20, 187, 255], dtype="uint8")
+lower = np.array([0, 44, 95], dtype="uint8")  # Define the range of colors that seems to be skin color
+upper = np.array([12, 129, 186], dtype="uint8")
 
 kernel = np.ones((3, 3), np.uint8)
 
@@ -38,8 +38,8 @@ def is_the_hand_open(region, frame, display):
         cv2.rectangle(frame, (region[0], region[1]), (region[2], region[3]), (0, 255, 0), 0)
     hsv = cv2.cvtColor(roi, cv2.COLOR_BGR2HSV)
     # define range of skin color in HSV
-    lower_skin = np.array([0, 87, 80], dtype=np.uint8)
-    upper_skin = np.array([20, 187, 255], dtype=np.uint8)
+    lower_skin = lower
+    upper_skin = upper
 
     # extract skin colur image
     mask = cv2.inRange(hsv, lower_skin, upper_skin)
