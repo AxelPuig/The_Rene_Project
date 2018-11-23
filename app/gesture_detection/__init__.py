@@ -26,7 +26,7 @@ def skin_detector(frame):  # define a function to blur the "non-skin" pixels
 
 def is_the_hand_open(region, frame, display):
     x1, y1, x2, y2 = region
-    width, height = frame.shape
+    width, height, _ = frame.shape
     x1 = int(min(max(x1, 0), width-2))
     x2 = int(min(max(x2, 0), width-1))
     y1 = int(min(max(y1, 0), height-2))
