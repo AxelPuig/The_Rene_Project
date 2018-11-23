@@ -9,7 +9,8 @@ import app.detectors.detector as dt
 import app.controllers.servo_controller as sct
 
 # define what percent we rotate every servo around each axis per frame
-coefficient_proportionnel = 0.5
+coefficient_proportionnel_y = 0.3
+coefficient_proportionnel_z = 0.5
 
 
 class Controller():
@@ -40,8 +41,8 @@ class Controller():
             delta_x = x - 0.5
             delta_y = y - 0.5
 
-            self.servos[0].add_ratio(delta_x * coefficient_proportionnel)
-            self.servos[1].add_ratio(delta_y * coefficient_proportionnel)
+            self.servos[0].add_ratio(delta_x * coefficient_proportionnel_z)
+            self.servos[1].add_ratio(delta_y * coefficient_proportionnel_y)
 
 
     def start_example(self):
