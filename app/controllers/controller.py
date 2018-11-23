@@ -1,3 +1,5 @@
+import time
+
 import cv2
 import os
 import sys
@@ -30,6 +32,8 @@ class Controller():
         if auto_capture:
             self.detector = dt.Detector(conf_threshold, dt.FACE_DETECTION)
 
+        self.nobody_rate = 0
+
 
     def move(self, person, frame):
         if person:
@@ -43,6 +47,19 @@ class Controller():
 
             self.servos[0].add_ratio(delta_x * coefficient_proportionnel_z)
             self.servos[1].add_ratio(delta_y * coefficient_proportionnel_y)
+
+            self.nobody_rate = 0
+        else:
+            self.nobody_rate += 1
+
+        if self.nobody_rate >= 5:
+            self.servos[0].set_ratio(0.2)
+            time.sleep(0.3)
+            self.servos[0].set_ratio(0.8)
+            time.sleep(0.3)
+            self.servos[0].set_ratio(0.5)
+            self.servos[1].set_ratio(0.5)
+
 
 
     def start_example(self):
