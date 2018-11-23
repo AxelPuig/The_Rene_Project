@@ -9,6 +9,7 @@ dir_path = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(dir_path)
 import recognizer as rc
 
+# intuitive implementation of Recognizer
 recognizer = rc.Recognizer(.6, rc.SMART_RECOGNITION)
 
 while True:

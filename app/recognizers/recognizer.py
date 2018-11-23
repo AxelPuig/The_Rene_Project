@@ -11,6 +11,7 @@ import sys
 import numpy as np
 import time
 
+# update system path to allow imports from raspberry
 dir_path = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(dir_path)
 import database as db
@@ -25,7 +26,7 @@ SMART_RECOGNITION = 1
 class Recognizer():
 
     def __init__(self, conf_threshold=0.2, method=1, source=-1, auto_capture=True):
-        """ Method corresponds to the detection method used"""
+        """ :param method corresponds to the detection method used"""
 
         self.method = method
         self.conf_threshold = conf_threshold
