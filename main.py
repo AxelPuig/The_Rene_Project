@@ -47,7 +47,7 @@ while True:
 
     action = gesture_detection(frame, person, display_gesture)  # Detect gesture
 
-    talker.talk(people, action, person, verbose=False)  # Eventually talk
+    talker.talk(people, action, person)  # Eventually talk
 
     controller.move(person, frame)  # Move the camera
 
