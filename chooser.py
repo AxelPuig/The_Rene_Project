@@ -1,4 +1,4 @@
-class ChoosePerson():
+class Chooser():
 
     def __init__(self):
         """ Write something if we need to remember things like the last person followed or something like that """

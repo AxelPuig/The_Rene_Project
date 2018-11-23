@@ -19,7 +19,7 @@ import argparse
 # Importing custom objects
 from app.capture import Capture
 from app.recognizers.recognizer import Recognizer
-from chooseperson import ChoosePerson
+from chooser import Chooser
 from app.controllers.controller import Controller
 
 # Parsing
@@ -33,7 +33,7 @@ verbose = 'v' in args.display
 # Objects initialisation
 cap = Capture()  # To read the frames from camera
 recognizer = Recognizer()  # To recognize
-chooser = ChoosePerson()
+chooser = Chooser()
 controller = Controller()
 
 # Say we are ready
