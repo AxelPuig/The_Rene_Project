@@ -7,7 +7,7 @@ import cv2
 dir_path = os.path.dirname(os.path.realpath(__file__)) + os.sep + '..' + os.sep + '..'
 sys.path.append(dir_path)
 
-import app.capture as cap
+import rene.capture as cap
 
 def capture_camera():
     # initialize the camera and grab a reference to the raw camera capture

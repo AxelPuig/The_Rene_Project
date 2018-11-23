@@ -4,7 +4,7 @@ import sys
 dir_path = os.path.dirname(os.path.realpath(__file__)) + os.sep + '..' + os.sep + '..'
 sys.path.append(dir_path)
 
-from app.controllers.controller import Controller
+from rene.controllers.controller import Controller
 
 controller = Controller([22,2,3])
 

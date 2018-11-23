@@ -10,8 +10,8 @@ dir_path = os.path.dirname(os.path.realpath(__file__)) + os.sep + '..' + os.sep 
 sys.path.append(dir_path)
 
 if ON_RASPBERRY:
-    import app.detectors.detector as dt
-    import app.controllers.servo_controller as sct
+    import rene.detectors.detector as dt
+    import rene.controllers.servo_controller as sct
 
 # define what percent we rotate every servo around each axis per frame
 coefficient_proportionnel_y = 0.3

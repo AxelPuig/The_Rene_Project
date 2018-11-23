@@ -16,11 +16,11 @@ import cv2
 import sys
 
 # Importing custom objects and function
-from app.capture import Capture
-from app.recognizers.recognizer import Recognizer
+from rene.capture import Capture
+from rene.recognizers.recognizer import Recognizer
 from chooser import Chooser
-from app.controllers.controller import Controller
-from app.gesture_detection import gesture_detection
+from rene.controllers.controller import Controller
+from rene.gesture_detection import gesture_detection
 
 # Parsing
 display_image = 'display' in sys.argv

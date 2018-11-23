@@ -1,4 +1,4 @@
-import app.rasp_speaking.talk as talk
+import rene.rasp_speaking.talk as talk
 
 
 class Talker:
@@ -43,14 +43,14 @@ class Talker:
         if self.nobody_rate >= 5:
             self.nobody_rate = 0
 
-            talk.read_file("app/rasp_speaking/nobody")
+            talk.read_file("rene/rasp_speaking/nobody")
 
         if verbose:
             print(self.hello_said)
             print(self.hello_in_process)
 
         if action == 1 and self.time_since_last_action > 1:
-            # talk.read_file("app/rasp_speaking/hey")
+            # talk.read_file("rene/rasp_speaking/hey")
             if person['confidence_name'] > 0.95:
                 talk.rene_parle("Comment ça va " + person['name'] + " ?")
             else:
