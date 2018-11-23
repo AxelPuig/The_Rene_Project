@@ -21,7 +21,7 @@ class Talker:
                 if person['name'] not in self.hello_said:  # Si bonjour non dit pour cette personne
                     if person['name'] not in self.hello_in_process:
                         self.hello_in_process[person['name']] = [1,
-                                                            0]  # [1 pour le nombre de fois reconnu, 0 à 2 pour les nombre de boucles parcourues depuis la dernière reconnaissance de data[name], au plus 2
+                                                                 0]  # [1 pour le nombre de fois reconnu, 0 à 2 pour les nombre de boucles parcourues depuis la dernière reconnaissance de data[name], au plus 2
                     elif self.hello_in_process[person['name']][0] == 1:
                         talk.rene_parle('Bonjour ' + person['name'])
                         self.hello_said.append(person['name'])
@@ -33,10 +33,12 @@ class Talker:
                     self.hello_in_process[i][1] += 1  # indique qu'une boucle de plus a été parcourue
                 else:
                     self.hello_in_process[i] = [0,
-                                           0]  # réinitialise si pas de 2ème reconnaissance en moins de 3 boucles parcourues.
+                                                0]  # réinitialise si pas de 2ème reconnaissance en moins de 3 boucles parcourues.
 
         if len(people) == 0:
             self.nobody_rate += 1
+        else:
+            self.nobody_rate = 0
 
         if self.nobody_rate >= 5:
             self.nobody_rate = 0
