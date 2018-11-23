@@ -2,7 +2,7 @@ import cv2
 import imutils
 import numpy as np
 
-from rene.gesture_detection.color_choosing import Settings
+from rene.gesture_detector.color_choosing import Settings
 
 def skin_detector(grabbed,frame): #define a function to blur the "non-skin" pixels
     frame = imutils.resize(frame, width = 400)
@@ -23,7 +23,7 @@ while k == -1:
     lower = np.array([v1, v3, v5], dtype = "uint8")       #Define the range of colors that seems to be skin color
     upper = np.array([v2, v4, v6], dtype = "uint8")
     ret = None
-    frame = cv2.imread("C:\\Users\\aypee\\PycharmProjects\\The_Rene_Project\\rene\\gesture_detection\\image.jpg")
+    frame = cv2.imread("C:\\Users\\aypee\\PycharmProjects\\The_Rene_Project\\rene\\gesture_detector\\image.jpg")
 
     _, new_frame = skin_detector(ret,frame)
 

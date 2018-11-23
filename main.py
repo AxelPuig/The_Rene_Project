@@ -20,7 +20,7 @@ from rene.capture import Capture
 from rene.recognizers.recognizer import Recognizer
 from rene.chooser import Chooser
 from rene.controller import Controller
-from rene.gesture_detection import gesture_detection
+from rene.gesture_detector import gesture_detection
 
 # Parsing
 display_image = 'display' in sys.argv
