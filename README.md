@@ -31,6 +31,7 @@ This project was built using:
 * numpy `1.14.2`
 * Pillow `5.1.0`
 * Click `7.0`
+* Svoxpico
 
 ### Authors
 * **Deschandol** Rémi (Servo control)
