@@ -19,9 +19,8 @@ a raspberry pi for image recognition features.
 
 ## Structure of the code
 -   The main loop is in the file `main.py` in the root.
--   This loop calls only a few functions or methods which are stored in other files.
--   The loop can only be used on the raspberry with the appropriate libraries.
--   Most of the example files can be run both on raspberry and computer
+-   This loop calls only a few functions or methods which are stored in the `rene` module.
+-   Some examples of these tools are given in `samples` directory.
 
 ## Dependencies
 This project was built using:
