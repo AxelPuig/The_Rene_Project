@@ -1,4 +1,4 @@
-# The René Project
+# The René Project (project completed)
 Educative project built during second CentraleSupélec 2018 coding week. The main objective was to use
 a raspberry pi for image recognition features.
 
