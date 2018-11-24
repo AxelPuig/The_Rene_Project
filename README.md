@@ -3,7 +3,7 @@ Educative project built during second CentraleSupélec 2018 coding week. The mai
 a raspberry pi for image recognition features.
 
 ## Description
--   René is a little robot composed of a *camera*
+-   René is a little robot composed of a*Raspberry Pi*, a *camera*, two *servomotors*, and a *speaker*.
 
 ## Base features (MVP)
 -	Follow a face with the camera in term of orientation `done`
