@@ -1,55 +1,59 @@
-""" Main function. Give an argument 'disp' when running to display the image """
-import time
+"""
+Main function running the full program.
+To debug the program, arguments can be added:
+- 'display', to display the frame taken by the pi
+- 'gesture', to display the detection operations on the frame
+- 'verbose', to print more information about what are the functions doing.
+"""
 
-from talker import Talker
-from app.gesture_detection import gesture_detection
+# Importing talking functionality to inform that the program is running
+from rene.talker import Talker
 
 talker = Talker()
-
-talker.start()
+talker.inform_preparing()
 
 import cv2
-import argparse
+import sys
 
-parser = argparse.ArgumentParser(description="Rene")
-parser.add_argument("display", help="display image",
-                    type=str, nargs='?', default="no")
-args = parser.parse_args()
+# Importing custom objects and function
+from rene.capture import Capture
+from rene.recognizers.recognizer import Recognizer
+from rene.chooser import Chooser
+from rene.controller import Controller
+from rene.gesture_detector import gesture_detection
 
-display_image = 'disp' in args.display
-display_gesture = 'gesture' in args.display
-verbose = 'verbose' in args.display
+# Parsing
+display_image = 'display' in sys.argv
+display_gesture = 'gesture' in sys.argv
+verbose = 'verbose' in sys.argv
 
-from app.capture import Capture
-from app.recognizers.recognizer import Recognizer
-from chooseperson import ChoosePerson
-from app.controllers.controller import Controller
+# Objects initialisation
+cap = Capture()  # To read the frames from camera
+recognizer = Recognizer()  # To recognize people
+chooser = Chooser()  # To choose someone to look at
+controller = Controller()  # To control the servos
 
-cap = Capture()
-recognizer = Recognizer(auto_capture=False)
-chooser = ChoosePerson()
-controller = Controller(.9, [-1, 2, 3], auto_capture=False)
-
-talker.ready()
+# Say we are ready
+talker.inform_ready()
 
 while True:
     # ---------- MAIN CODE ----------
 
-    res, frame = cap.read()
+    _, frame = cap.read()  # Reading the frame
 
-    people, _ = recognizer.find_people(frame)
+    people, _ = recognizer.find_people(frame)  # Find people on frame
 
-    person = chooser.choose(people)
+    person = chooser.choose(people)  # Choose a person to follow
 
-    action = gesture_detection(frame, person, display_gesture)
+    action = gesture_detection(frame, person, display_gesture)  # Detect gesture
 
-    talker.talk(people, action, person, verbose=False)
+    talker.talk(people, action, person)  # Eventually talk
 
-    controller.move(person, frame)
+    controller.move(person, frame)  # Move the camera
 
     # ---------- END MAIN CODE ----------
 
-    # Display results
+    # Display results eventually
     if verbose:
         print(people, person)
         print(action)
